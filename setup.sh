@@ -327,6 +327,7 @@ sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
 #############################
 echo "Creating uWSGI service with systemd..."
 sudo touch /etc/systemd/system/emperor.uwsgi.service
+sudo chown $USER:$USER /etc/systemd/system/emperor.uwsgi.service
 sudo touch /var/log/uwsgi.log
 read -d '' uwsgisvc <<"EOF"
 [Unit]
@@ -348,11 +349,12 @@ NotifyAccess=main
 [Install]
 WantedBy=multi-user.target
 EOF
-sudo echo "$uwsgisvc" >> /etc/systemd/system/emperor.uwsgi.service
+echo "$uwsgisvc" >> /etc/systemd/system/emperor.uwsgi.service
 echo "Modifying paths in emperor.uwsgi.service..."
 sudo sed -i s/virtenv/${virtenv0}/g /etc/systemd/system/emperor.uwsgi.service
 sudo sed -i s/djangProj/${djangProj}/g /etc/systemd/system/emperor.uwsgi.service
-echo "Chedking emperor.uwsgi.service for errors..."
+echo "Checking emperor.uwsgi.service for errors..."
+sudo chown root:root /etc/systemd/system/emperor.uwsgi.service
 sudo systemd-analyze verify /etc/init/uwsgi.conf
 echo "Starting emperor.uwsgi.service..."
 sudo systemctl start emperor.uwsgi.service
