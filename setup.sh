@@ -276,8 +276,8 @@ server {
     access_log virtenv/djangProj/data/log/access.log;
     #access_log off;
     location / {
-        include uwsgi_params;
         uwsgi_pass wsgicluster;
+	include virtenv/djangProj/uwsgi_params;
     }
     location /static {
         alias virtenv/static;
