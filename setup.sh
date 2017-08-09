@@ -8,9 +8,9 @@
 #  * Web Server: Nginx
 ################################################################################
 ## Config variables
-djangdb=Schedule
-djangProj=MyProject
-virtenv=/opt/project
+djangdb=mysitedb
+djangProj=MySite
+virtenv=/opt/djangvenv
 # Django superuser
 USER=${USER}
 MAIL="admin@mail.com"
@@ -163,6 +163,8 @@ echo "Configuring Django..."
 cd ${virtenv}/${djangProj}
 echo "Creating static folder..."
 mkdir -p ${virtenv}/${djangProj}/static
+echo "Creating logging folder..."
+mkdir -p ${virtenv}/${djangProj}/data/log
 echo "Activating VirtualEnv..."
 source ../bin/activate
 echo "Making migrations..."
@@ -295,6 +297,8 @@ sed -i s/virtenv/${virtenv0}/g ${djangProj}.conf
 sed -i s/djangProj/${djangProj}/g ${djangProj}.conf
 echo "Linking config to sites-enabled..."
 sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
+echo "Removing nginx default site..."
+sudo rm -f /etc/nginx/sites-enabled/default
 
 ################################################################################
 # echo "Configuring vassals for uWSGI emperor..."
@@ -357,6 +361,7 @@ echo "Checking emperor.uwsgi.service for errors..."
 sudo chown root:root /etc/systemd/system/emperor.uwsgi.service
 sudo systemd-analyze verify /etc/init/uwsgi.conf
 echo "Starting emperor.uwsgi.service..."
-sudo systemctl start emperor.uwsgi.service
+sudo service emperor.uwsgi start
+#sudo systemctl start emperor.uwsgi.service
 #sudo initctl reload-Configuration
 #update-alternatives --set uwsgi /usr/bin/uwsgi_python32
