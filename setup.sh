@@ -3,8 +3,8 @@
 # nginx <-> unix socket <-> uwsgi <-> Django <-> PostgreSQL
 # Setup script for Django dev environment
 #  * Database: PostgresSQL
-#  * Django enivronment: Virtual environment
-#  * Web Server Gateway Interface: uWSGI
+#  * Django framework: (virtual environment)
+#  * Web Server Gateway Interface: uWSGI (uwsgi running in virtual environment)
 #  * Web Server: Nginx
 ################################################################################
 ## Config variables
@@ -46,7 +46,8 @@ printf "\n"
 sudo apt-get update && sudo apt-get -y upgrade
 
 echo "Installing packages..."
-sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql uwsgi uwsgi-plugin-python3 nginx-full postgresql-contrib libpq-dev gcc
+sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql nginx-full postgresql-contrib libpq-dev gcc
+ #uwsgi uwsgi-plugin-python3
 
 echo "Upgrading pip..."
 sudo pip3 install --upgrade pip
@@ -87,7 +88,7 @@ touch test.py
 read -d '' test <<"EOF"
 # test.py
 def application(env, start_response):
-    start_response('200 OK', [('Content-Type','text/htmo')])
+    start_response('200 OK', [('Content-Type','text/html')])
     return [b"Hello World"]
 EOF
 echo test >> test.py
@@ -276,8 +277,8 @@ server {
     access_log virtenv/djangProj/data/log/access.log;
     #access_log off;
     location / {
+        include virtenv/djangProj/uwsgi_params;
         uwsgi_pass wsgicluster;
-	include virtenv/djangProj/uwsgi_params;
     }
     location /static {
         alias virtenv/static;
@@ -342,7 +343,7 @@ After=syslog.target
 PIDFile=/run/uwsgi/uwsgi.pid
 ExecStartPre=/bin/mkdir -p /run/uwsgi
 #ExecStartPre=/bin/chown http:http /run/uwsgi
-ExecStart=/usr/bin/uwsgi --ini /virtenv/djangProj/emperor.ini --enable-threads
+ExecStart=virtenv/bin/uwsgi --ini virtenv/djangProj/emperor.ini --enable-threads
 RuntimeDirectory=uwsgi
 Restart=always
 KillSignal=SIGQUIT
