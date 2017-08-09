@@ -27,7 +27,7 @@ printf "\n"
 echo "Updating packages..."
 ## Check to see if dpkg is in use by the system
 dailytask=$(ps -ax | grep apt.systemd.daily | grep -v grep)
-waitnum=$(ps -ax | grep apt.systemd.daily| grep -v grep | wc -l)
+waitnum=$(ps -ax | grep apt.systemd.daily | grep -v grep | wc -l)
 waitnum=${waitnum#0}
 #sudo fuser /var/lib/dpkg/lock
 if [ $waitnum > 0 ]; then
@@ -161,8 +161,8 @@ echo "Done modifying settings.py"
 echo "Configuring Django..."
 # Switch to Django project directory
 cd ${virtenv}/${djangProj}
-echo "Creating static folder..."
-mkdir -p ${virtenv}/${djangProj}/static
+#echo "Creating static folder..."
+#mkdir -p ${virtenv}/${djangProj}/static
 echo "Creating logging folder..."
 mkdir -p ${virtenv}/${djangProj}/data/log
 echo "Activating VirtualEnv..."
@@ -280,7 +280,7 @@ server {
         uwsgi_pass wsgicluster;
     }
     location /static {
-        alias virtenv/djangProj/static;
+        alias virtenv/static;
     }
     #location -^/(img|js|css)/ {
     #    root virtenv/djangProj/public;
