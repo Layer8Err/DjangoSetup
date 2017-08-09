@@ -222,8 +222,8 @@ uwsgi_param  SERVER_NAME        $server_name;
 EOF
 echo "$uwparams" >> uwsgi_params
 
-echo "Creating uwsgi.ini..."
-touch uwsgi.ini
+echo "Creating emperor.ini..."
+touch {$virtenv}/{$djangProj}/emperor.ini
 read -d '' uwsgini <<"EOF"
 [uwsgi]
 # Django-related settings
@@ -280,7 +280,7 @@ server {
         uwsgi_pass wsgicluster;
     }
     location /static {
-        alias /opt/project/djangProj/static;
+        alias virtenv/djangProj/static;
     }
     #location -^/(img|js|css)/ {
     #    root virtenv/djangProj/public;
@@ -359,9 +359,11 @@ sudo sed -i s/virtenv/${virtenv0}/g /etc/systemd/system/emperor.uwsgi.service
 sudo sed -i s/djangProj/${djangProj}/g /etc/systemd/system/emperor.uwsgi.service
 echo "Checking emperor.uwsgi.service for errors..."
 sudo chown root:root /etc/systemd/system/emperor.uwsgi.service
-sudo systemd-analyze verify /etc/init/uwsgi.conf
+sudo systemd-analyze verify /etc/systemd/system/emperor.uwsgi.service
 echo "Starting emperor.uwsgi.service..."
 sudo service emperor.uwsgi start
+echo "Restarting nginx service..."
+sudo service nginx restart
 #sudo systemctl start emperor.uwsgi.service
 #sudo initctl reload-Configuration
 #update-alternatives --set uwsgi /usr/bin/uwsgi_python32
