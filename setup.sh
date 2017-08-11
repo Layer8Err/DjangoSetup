@@ -38,8 +38,8 @@ echo "Database name:       ${djangdb}"
 echo "Superuser name:      ${USER}"
 echo "Superuser email:     ${MAIL}"
 echo ""
-echo "Hit ENTER to continue with setup"
-read -s pause
+echo "Enter password to continue with setup"
+sudo -v
 
 echo "Updating packages..."
 ## Check to see if dpkg is in use by the system
