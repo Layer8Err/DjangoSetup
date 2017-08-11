@@ -14,12 +14,12 @@ virtenv=/opt/djangvenv
 USER=${USER}
 MAIL="admin@mail.com"
 ################################################################################
-echo "Site (project) name: "
+echo -n "Site (project) name: "
 read -r djangProj
 if [ ${#djangProj} < 1 ]; then
     djangProj="project"
 fi
-echo "Database name: "
+echo -n "Database name: "
 read -r djangdb
 if [ ${#djangdb} < 1 ]; then
     djangdb=${djangProj}
