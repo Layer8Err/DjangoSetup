@@ -12,12 +12,12 @@ to get things set the way you want. You will probably want to tweak
 some of the settings and configurations to suit your needs.
 
 ## Installation
-_______________________________________________________
+| GitHub Install                                      |
+| ----------------------------------------------------|
 |  git clone https://github.com/layer8err/djangosetup |
 |  cd djangosetup                                     |
 |  chmod +x setup.sh                                  |
 |  ./setup.sh                                         |
--------------------------------------------------------
 
 ## Django configuration
 This script will set up Django to use:
