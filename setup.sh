@@ -16,12 +16,12 @@ MAIL="admin@mail.com"
 ################################################################################
 echo -n "Site (project) name: "
 read -r djangProj
-if [ ${#djangProj} < 1 ]; then
+if [ ! "$djangProj" ]; then
     djangProj="project"
 fi
 echo -n "Database name: "
 read -r djangdb
-if [ ${#djangdb} < 1 ]; then
+if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
 fi
 echo "Set up PostgresSQL user: ${USER}"
@@ -31,6 +31,15 @@ printf "\nConfirm PSQL Password: "
 read -s PASSWORD
 [ "$PASSWORD0" != "$PASSWORD" ] && printf "\nPasswords do not match!\n" && source $0
 printf "\n"
+echo "Verify Django info"
+echo "Virtual environment: ${virtenv}"
+echo "Project name:        ${djangProj}"
+echo "Database name:       ${djangdb}"
+echo "Superuser name:      ${USER}"
+echo "Superuser email:     ${MAIL}"
+echo ""
+echo "Hit ENTER to continue with setup"
+pause
 
 echo "Updating packages..."
 ## Check to see if dpkg is in use by the system
