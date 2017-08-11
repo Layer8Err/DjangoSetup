@@ -156,19 +156,20 @@ rm settings.py
 mv settings2.py settings.py
 
 echo "Setting STATIC_ROOT"
-echo "STATIC_ROOT = '${virtenv}/static/'" >> settings.py
-
+#echo "STATIC_ROOT = '${virtenv}/static/'" >> settings.py
+echo "STATIC_ROOT = os.path.join(BASE_DIR, \"static/\")" >> settings.py
 echo "Done modifying settings.py"
 ################################################################################
 echo "Configuring Django..."
-# Switch to Django project directory
-cd ${virtenv}/${djangProj}
-#echo "Creating static folder..."
-#mkdir -p ${virtenv}/${djangProj}/static
+echo "Creating static folder..."
+mkdir -p ${virtenv}/${djangProj}/static
 echo "Creating logging folder..."
 mkdir -p ${virtenv}/${djangProj}/data/log
 echo "Activating VirtualEnv..."
-source ../bin/activate
+source {$virtenv}/bin/activate
+cd ${virtenv}/${djangProj}
+echo "Collecting static..."
+python3 manage.py collectstatic
 echo "Making migrations..."
 python3 manage.py makemigrations
 echo "Migrating..."
@@ -191,15 +192,13 @@ else:
 "
 printf "$script" | python3 manage.py shell
 #############################
-echo "Collecting static..."
-python3 manage.py collectstatic
 echo "Deactivating VirtualEnv..."
 deactivate
 ################################################################################
 echo "Configuring uWSGI..."
 cd ${virtenv}/${djangProj}
 
-echo "Touching the socket in tmp..."
+echo "Touching the sock in tmp..."
 touch /tmp/uwsgi.sock
 
 echo "Creating uwsgi_params..."
@@ -241,7 +240,7 @@ master          = true
 processes       = 5
 # the socket (use the full path to be safe)
 socket		= /tmp/uwsgi.sock
-# ... with appropriate permissions - may be needed
+# Fix sock permissions (better if 664)
 chmod-socket    = 666
 # clear environment on exit
 vacuum          = true
