@@ -15,29 +15,32 @@ USER=${USER}
 MAIL="admin@mail.com"
 
 ################################################################################
-echo -n "Site (project) name: "
+echo "Django Setup"
+echo "-----------------------------------------"
+echo -n "Site (project) name:    "
 read -r djangProj
 if [ ! "$djangProj" ]; then
     djangProj="project"
 fi
-echo -n "Database name: "
+echo -n "Database name:          "
 read -r djangdb
 if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
 fi
-echo "Set up PostgresSQL user: ${USER}"
+echo "Set up PostgresSQL user:    ${USER}"
 echo -n "Enter PSQL Password:     "
 read -s PASSWORD0
 printf "\nConfirm PSQL Password: "
 read -s PASSWORD
 [ "$PASSWORD0" != "$PASSWORD" ] && printf "\nPasswords do not match!\n" && source $0
 printf "\n"
+echo "========================================="
 echo "Verify Django info"
-echo "Virtual environment: ${virtenv}"
-echo "Project name:        ${djangProj}"
-echo "Database name:       ${djangdb}"
-echo "Superuser name:      ${USER}"
-echo "Superuser email:     ${MAIL}"
+echo "Virtual environment:     ${virtenv}"
+echo "Project name:            ${djangProj}"
+echo "Database name:           ${djangdb}"
+echo "Superuser name:          ${USER}"
+echo "Superuser email:         ${MAIL}"
 echo ""
 echo "Enter password to continue with setup"
 sudo -v
