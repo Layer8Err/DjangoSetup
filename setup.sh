@@ -183,7 +183,8 @@ mkdir -p ${virtenv}/${djangProj}/static
 echo "Creating logging folder..."
 mkdir -p ${virtenv}/${djangProj}/data/log
 echo "Activating VirtualEnv..."
-source {$virtenv}/bin/activate
+cd ${virtenv}
+source bin/activate
 cd ${virtenv}/${djangProj}
 echo "Collecting static..."
 python3 manage.py collectstatic
