@@ -176,8 +176,8 @@ rm settings.py
 mv settings2.py settings.py
 
 echo "Setting STATIC_ROOT"
-#echo "STATIC_ROOT = '${virtenv}/static/'" >> settings.py
-echo "STATIC_ROOT = os.path.join(BASE_DIR, \"static/\")" >> settings.py
+echo "STATIC_ROOT = '${virtenv}/static/'" >> settings.py
+#echo "STATIC_ROOT = os.path.join(BASE_DIR, \"static/\")" >> settings.py
 echo "...done modifying settings.py"
 ################################################################################
 echo "Configuring Django project structure and configs..."
