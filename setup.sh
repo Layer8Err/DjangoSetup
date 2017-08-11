@@ -6,7 +6,7 @@
 #  * Django framework: (virtual environment)
 #  * Web Server Gateway Interface: uWSGI (uwsgi running in virtual environment)
 #  * Web Server: Nginx
-# Test Upload 1
+# Test Upload 2
 ################################################################################
 ## Config variables
 djangdb=mysitedb
