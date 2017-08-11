@@ -15,22 +15,23 @@ USER=${USER}
 MAIL="admin@mail.com"
 
 ################################################################################
+echo "========================================="
 echo "Django Setup"
 echo "-----------------------------------------"
-echo -n "Site (project) name:    "
+echo -n "Site (project) name:     "
 read -r djangProj
 if [ ! "$djangProj" ]; then
     djangProj="project"
 fi
-echo -n "Database name:          "
+echo -n "Database name:           "
 read -r djangdb
 if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
 fi
-echo "Set up PostgresSQL user:    ${USER}"
+echo "Set up PostgresSQL user: ${USER}"
 echo -n "Enter PSQL Password:     "
 read -s PASSWORD0
-printf "\nConfirm PSQL Password: "
+printf "\nConfirm PSQL Password:   "
 read -s PASSWORD
 [ "$PASSWORD0" != "$PASSWORD" ] && printf "\nPasswords do not match!\n" && source $0
 printf "\n"
