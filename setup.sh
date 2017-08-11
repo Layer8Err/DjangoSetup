@@ -103,23 +103,22 @@ echo "Deactivating VirtualEnv..."
 deactivate
 ################################################################################
 ## Stuff for testing
-echo "Creating test file..."
-cd ${djangProj}
-touch test.py
-read -d '' test <<"EOF"
-# test.py
-def application(env, start_response):
-    start_response('200 OK', [('Content-Type','text/html')])
-    return [b"Hello World"]
-EOF
-echo test >> test.py
-echo "Running test..."
-uwsgi --http :8000 --wsgi-file test.py
-#################
-python manage.py runserver 0.0.0.0:8000
+# echo "Creating test file..."
+# cd ${djangProj}
+# touch test.py
+# read -d '' test <<"EOF"
+# # test.py
+# def application(env, start_response):
+#     start_response('200 OK', [('Content-Type','text/html')])
+#     return [b"Hello World"]
+# EOF
+# echo test >> test.py
+# echo "Running test..."
+# uwsgi --http :8000 --wsgi-file test.py
+# #################
+# python manage.py runserver 0.0.0.0:8000
 ################################################################################
-echo "Configuring..."
-echo "Django settings.py"
+echo "Configuring Django settings.py..."
 cd ${virtenv}/${djangProj}/${djangProj}
 echo "Setting DEBUG = False"
 sed -i s/DEBUG\ =\ True/DEBUG\ =\ False/g settings.py
@@ -178,14 +177,14 @@ mv settings2.py settings.py
 echo "Setting STATIC_ROOT"
 #echo "STATIC_ROOT = '${virtenv}/static/'" >> settings.py
 echo "STATIC_ROOT = os.path.join(BASE_DIR, \"static/\")" >> settings.py
-echo "Done modifying settings.py"
+echo "...done modifying settings.py"
 ################################################################################
-echo "Configuring Django..."
+echo "Configuring Django project structure and configs..."
 echo "Creating static folder..."
 mkdir -p ${virtenv}/${djangProj}/static
 echo "Creating logging folder..."
 mkdir -p ${virtenv}/${djangProj}/data/log
-echo "Activating VirtualEnv..."
+echo "Activating virtual environment..."
 cd ${virtenv}
 source bin/activate
 cd ${virtenv}/${djangProj}
@@ -213,7 +212,7 @@ else:
 "
 printf "$script" | python3 manage.py shell
 #############################
-echo "Deactivating VirtualEnv..."
+echo "Deactivating virtual environment..."
 deactivate
 ################################################################################
 echo "Configuring uWSGI..."
@@ -245,7 +244,8 @@ EOF
 echo "$uwparams" >> uwsgi_params
 
 echo "Creating emperor.ini..."
-touch {$virtenv}/{$djangProj}/emperor.ini
+#cd {$virtenv}/{$djangProj}
+touch emperor.ini
 read -d '' uwsgini <<"EOF"
 [uwsgi]
 # Django-related settings
@@ -276,7 +276,7 @@ sed -i s/virtenvProj/${virtenvProj}/g emperor.ini
 echo "Setting wsgi file module..."
 sed -i s/djangProj/${djangProj}/g emperor.ini
 virtenv0="${virtenv//\//\\/}"
-echo "Setting virtualenv home..."
+echo "Setting virtual environment home..."
 sed -i s/virtenv/${virtenv0}/g emperor.ini
 
 #############################
