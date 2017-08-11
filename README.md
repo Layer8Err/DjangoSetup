@@ -12,6 +12,7 @@ to get things set the way you want. You will probably want to tweak
 some of the settings and configurations to suit your needs.
 
 ## Installation
+If you already have git installed, you can install the django environment with the following commands:
 ```
 git clone https://github.com/layer8err/djangosetup
 cd djangosetup

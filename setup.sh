@@ -9,14 +9,21 @@
 # Test Upload 5
 ################################################################################
 ## Config variables
-djangdb=mysitedb
-djangProj=MySite
 virtenv=/opt/djangvenv
-# Django superuser
+# Django superuser info
 USER=${USER}
 MAIL="admin@mail.com"
 ################################################################################
-
+echo "Site (project) name: "
+read -r djangProj
+if [ ${#djangProj} < 1 ]; then
+    djangProj="project"
+fi
+echo "Database name: "
+read -r djangdb
+if [ ${#djangdb} < 1 ]; then
+    djangdb=${djangProj}
+fi
 echo "Set up PostgresSQL user: ${USER}"
 echo -n "Enter PSQL Password:     "
 read -s PASSWORD0
