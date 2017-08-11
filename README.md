@@ -11,10 +11,18 @@ You should be able to run the setup script and follow the prompts
 to get things set the way you want. You will probably want to tweak
 some of the settings and configurations to suit your needs.
 
+## Installation
+_______________________________________________________
+|  git clone https://github.com/layer8err/djangosetup |
+|  cd djangosetup                                     |
+|  chmod +x setup.sh                                  |
+|  ./setup.sh                                         |
+-------------------------------------------------------
+
 ## Django configuration
 This script will set up Django to use:
 * Nginx as the web server
-* uWSGI as the WSGI (utilizing unix socket)
+* uWSGI as the WSGI (utilizing unix socket) in a virtual environment
 * Django in a Python3 virtual environment
 * PostgreSQL as the database
 
