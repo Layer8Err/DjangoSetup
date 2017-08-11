@@ -39,7 +39,7 @@ echo "Superuser name:      ${USER}"
 echo "Superuser email:     ${MAIL}"
 echo ""
 echo "Hit ENTER to continue with setup"
-pause
+read -s pause
 
 echo "Updating packages..."
 ## Check to see if dpkg is in use by the system
