@@ -6,13 +6,14 @@
 #  * Django framework: (virtual environment)
 #  * Web Server Gateway Interface: uWSGI (uwsgi running in virtual environment)
 #  * Web Server: Nginx
-# Test Upload 5
+
 ################################################################################
 ## Config variables
 virtenv=/opt/djangvenv
 # Django superuser info
 USER=${USER}
 MAIL="admin@mail.com"
+
 ################################################################################
 echo -n "Site (project) name: "
 read -r djangProj
