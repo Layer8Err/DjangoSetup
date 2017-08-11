@@ -196,7 +196,7 @@ python3 manage.py makemigrations
 echo "Migrating..."
 python3 manage.py migrate
 #############################
-echo "Creating superuser..."
+echo -n "Creating superuser..."
 #python3 manage.py createsuperuser
 script="
 from django.contrib.auth.models import User;
@@ -207,9 +207,9 @@ email = '$MAIL';
 
 if User.objects.filter(username=username).count()==0:
     User.objects.create_superuser(username, email, password);
-    print('Superuser created.');
+    print('...Superuser created');
 else:
-    print('Superuser creation skipped.');
+    print('...Superuser creation skipped');
 "
 printf "$script" | python3 manage.py shell
 #############################
