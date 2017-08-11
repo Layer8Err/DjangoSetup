@@ -303,7 +303,7 @@ server {
         uwsgi_pass wsgicluster;
     }
     location /static {
-        alias virtenv/static;
+        alias virtenv/djangProj/static;
     }
     #location -^/(img|js|css)/ {
     #    root virtenv/djangProj/public;
