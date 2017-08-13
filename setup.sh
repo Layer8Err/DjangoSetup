@@ -387,6 +387,8 @@ echo "Starting emperor.uwsgi.service..."
 sudo service emperor.uwsgi start
 echo "Restarting nginx service..."
 sudo service nginx restart
+echo "Setting emperor.uwsgi service to auto-start..."
+sudo systemctl enable emperor.uwsgi.service
 #sudo systemctl start emperor.uwsgi.service
 #sudo initctl reload-Configuration
 #update-alternatives --set uwsgi /usr/bin/uwsgi_python32
