@@ -6,9 +6,11 @@
 
 ## Config variables
 virtenv=/opt/djangvenv
+project=djangsite
 
 cd ${virtenv}
 source bin/activate
+cd ${project}
 
 printf "\nNew Django app name: "
 read -r DJANGAPP
