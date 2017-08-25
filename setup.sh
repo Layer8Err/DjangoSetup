@@ -74,6 +74,9 @@ sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql ng
 echo "Upgrading pip..."
 sudo pip3 install --upgrade pip
 
+echo "Installing python django dependencies (globaly)..."
+sudo 
+
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
 sudo -u postgres psql -c "CREATE USER ${USER} WITH LOGIN SUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '${PASSWORD}';"
