@@ -22,13 +22,13 @@ echo -n "Site (project) name:     "
 read -r djangProj
 if [ ! "$djangProj" ]; then
     djangProj="project"
-    printf "${djangProj}\n"
+    printf "                      ${djangProj}\n"
 fi
 echo -n "Database name:           "
 read -r djangdb
 if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
-    printf "${djangdb}\n"
+    printf "                      ${djangdb}\n"
 fi
 echo "Set up PostgresSQL user: ${USER}"
 echo -n "Enter PSQL Password:     "
