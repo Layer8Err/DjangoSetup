@@ -75,7 +75,11 @@ echo "Upgrading pip..."
 sudo pip3 install --upgrade pip
 
 echo "Installing python django dependencies (globaly)..."
-sudo 
+sudo -H pip3 install setuptools
+sudo -H pip3 install pip
+sudo -H pip3 install wheel
+sudo -H pip3 install virtualenv
+sudo -H pip3 install django
 
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
@@ -99,7 +103,6 @@ echo "Setting up pip packages in VirtualEnv..."
 pip3 install django
 pip3 install uwsgi
 pip3 install psycopg2
-pip3 install setuptools
 
 echo "Creating Django project..."
 django-admin.py startproject ${djangProj}
