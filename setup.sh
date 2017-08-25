@@ -80,6 +80,8 @@ sudo -H pip3 install pip
 sudo -H pip3 install wheel
 sudo -H pip3 install virtualenv
 sudo -H pip3 install django
+sudo -H pip3 install uwsgi
+sudo -H pip3 install psycopg2
 
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
@@ -98,7 +100,7 @@ cd ${virtenv}
 virtualenv . -p python3
 
 echo "Activating VirtualEnv..."
-source bin/activate
+source ${virtenv}/bin/activate
 echo "Setting up pip packages in VirtualEnv..."
 pip3 install django
 pip3 install uwsgi
