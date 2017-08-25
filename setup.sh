@@ -22,11 +22,13 @@ echo -n "Site (project) name:     "
 read -r djangProj
 if [ ! "$djangProj" ]; then
     djangProj="project"
+    printf "${djangProj}\n"
 fi
 echo -n "Database name:           "
 read -r djangdb
 if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
+    printf "${djangdb}\n"
 fi
 echo "Set up PostgresSQL user: ${USER}"
 echo -n "Enter PSQL Password:     "
@@ -72,7 +74,7 @@ sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql ng
  #uwsgi uwsgi-plugin-python3
 
 echo "Upgrading pip..."
-sudo pip3 install --upgrade pip
+sudo -H pip3 install --upgrade pip
 
 echo "Installing python django dependencies (globaly)..."
 sudo -H pip3 install setuptools
@@ -80,6 +82,7 @@ sudo -H pip3 install pip
 sudo -H pip3 install wheel
 sudo -H pip3 install virtualenv
 sudo -H pip3 install django
+sudo -H pip3 install pytz
 sudo -H pip3 install uwsgi
 sudo -H pip3 install psycopg2
 
