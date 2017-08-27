@@ -161,6 +161,8 @@ fi
 echo "-----------------------------------------"
 echo "Building package..."
 cd ${virtenv}/${builddir}
+echo "Activating virtual environment..."
+source ${virtenv}/bin/activate
 python3 setup.py sdist
 
 echo "========================================="
@@ -175,12 +177,10 @@ if [ "$reinstall" != "y" ]; then
     exit
 fi
 echo "-----------------------------------------"
-echo "Activating virtual environment..."
-source ${virtenv}/bin/activate
+echo "Re-installing ${targetapp} with pip..."
 cd ${virtenv}/${builddir}
-
-echo "Reinstalling ${targetapp} with pip..."
-pip3 install --user dist/${builddir}-0.1.tar.gz
+#pip3 install --user dist/${builddir}-0.1.tar.gz # use if not in virtenv
+pip3 install dist/${builddir}-0.1.tar.gz
 
 deactivate
 
