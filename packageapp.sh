@@ -188,3 +188,11 @@ deactivate
 ## Testing Stuff ##
 # Uninstall package
 # pip3 uninstall ${builddir}
+
+## Installing on other systems
+# Don't forget to collectstatic/migrate after pip install
+# Make sure that you add the app to the enabled apps (settings.py)
+# 'targetapp.apps.TargetAppConfig'
+# Make sure that you modify the urls.py file
+# from django.conf.urls import url, include
+# url(r'^', include('targetapp.urls')),
