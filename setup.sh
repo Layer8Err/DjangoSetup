@@ -81,7 +81,7 @@ if [ $thisos = "centos" ]; then
     # Experimental stuff for CentOS7 (these packages are older than the ones installed for Ubuntu 16.04)
     ## https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-centos-7
     sudo yum -y -v upgrade
-    sudo yum -y -v install postgresql epel-release gcc
+    sudo yum -y -v install postgresql postgresql-server postgresql-contrib epel-release gcc
     sudo yum -y -v install nginx python34 python34-pip python34-devel 
     # sudo -H pip3 install --upgrade pip
     # sudo pip3 install requests bs4 lxml js2py # Web scraping
@@ -93,6 +93,11 @@ if [ $thisos = "centos" ]; then
     ## Set python3.4 as the default
     # echo "alias python='/usr/bin/python3.4'" >> ~/.bashrc
     # source ~/.bashrc
+    sudo postgresql-setup initdb
+    echo "Enabling PostgreSQL service..."
+    sudo systemctl enable postgresql
+    echo "Starting PostgreSQL service..."
+    sudo systemctl start postgresql
 fi
 
 
