@@ -47,12 +47,13 @@ echo "Superuser email:         ${MAIL}"
 echo ""
 echo "Enter password to continue with setup"
 sudo -v
-
+echo "========================================="
 echo "Updating packages..."
 ## Check OS
 thisos=$(cat /etc/*release | grep centos | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 # Ubuntu
-if [ $thisos = "ubuntu" ]; then
+#if [ $thisos = "ubuntu" ]; then
+if [ $thisos != "centos" ]; then
     ## Check to see if dpkg is in use by the system
     dailytask=$(ps -ax | grep apt.systemd.daily | grep -v grep)
     waitnum=$(ps -ax | grep apt.systemd.daily | grep -v grep | wc -l)
@@ -94,6 +95,8 @@ if [ $thisos = "centos" ]; then
     # echo "alias python='/usr/bin/python3.4'" >> ~/.bashrc
     # source ~/.bashrc
     sudo postgresql-setup initdb
+    echo "Modify pg_hba.conf to allow password login..."
+    sudo sed -i s/ident/md5/g /var/lib/pgsql/data/pg_hba.conf
     echo "Enabling PostgreSQL service..."
     sudo systemctl enable postgresql
     echo "Starting PostgreSQL service..."
@@ -121,14 +124,16 @@ sudo mkdir -p ${virtenv}
 sudo chown -R ${USER}:${USER} ${virtenv}
 mkdir -p ${virtenv}/static
 cd ${virtenv}
-virtualenv . -p python3
+if [ $thisos = "centos" ]; then
+    virtualenv . -p python34
+else
+    virtualenv . -p python3
+fi
 
 echo "Activating VirtualEnv..."
 source ${virtenv}/bin/activate
 echo "Setting up pip packages in VirtualEnv..."
-pip3 install django
-pip3 install uwsgi
-pip3 install psycopg2
+pip3 install django uwsgi psycopg2
 
 echo "Creating Django project..."
 django-admin.py startproject ${djangProj}
