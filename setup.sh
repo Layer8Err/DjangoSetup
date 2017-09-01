@@ -49,42 +49,58 @@ echo "Enter password to continue with setup"
 sudo -v
 
 echo "Updating packages..."
-## Check to see if dpkg is in use by the system
-dailytask=$(ps -ax | grep apt.systemd.daily | grep -v grep)
-waitnum=$(ps -ax | grep apt.systemd.daily | grep -v grep | wc -l)
-waitnum=${waitnum#0}
-#sudo fuser /var/lib/dpkg/lock
-if [ $waitnum > 0 ]; then
-    taskpid=$(ps -ax | grep apt.systemd.daily | grep -v grep | awk '{print$1}')
-    printf "\nWaiting for apt.systemd.daily task ${taskpid} to finish..."
+## Check OS
+thisos=$(cat /etc/*release | grep centos | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
+# Ubuntu
+if [ $thisos = "ubuntu" ]; then
+    ## Check to see if dpkg is in use by the system
+    dailytask=$(ps -ax | grep apt.systemd.daily | grep -v grep)
     waitnum=$(ps -ax | grep apt.systemd.daily | grep -v grep | wc -l)
     waitnum=${waitnum#0}
-    while [ ${waitnum} > 0 ]; do
-        sleep 5
-        printf "."
+    #sudo fuser /var/lib/dpkg/lock
+    if [ $waitnum > 0 ]; then
+        taskpid=$(ps -ax | grep apt.systemd.daily | grep -v grep | awk '{print$1}')
+        printf "\nWaiting for apt.systemd.daily task ${taskpid} to finish..."
         waitnum=$(ps -ax | grep apt.systemd.daily | grep -v grep | wc -l)
         waitnum=${waitnum#0}
-    done
-fi
-printf "\n"
-sudo apt-get update && sudo apt-get -y upgrade
+        while [ ${waitnum} > 0 ]; do
+            sleep 5
+            printf "."
+            waitnum=$(ps -ax | grep apt.systemd.daily | grep -v grep | wc -l)
+            waitnum=${waitnum#0}
+        done
+    fi
+    printf "\n"
+    sudo apt-get update && sudo apt-get -y upgrade
 
-echo "Installing packages..."
-sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql nginx-full postgresql-contrib libpq-dev gcc
- #uwsgi uwsgi-plugin-python3
+    echo "Installing packages..."
+    sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql nginx-full postgresql-contrib libpq-dev gcc
+fi
+# CentOS
+if [ $thisos = "centos" ]; then
+    # Experimental stuff for CentOS7 (these packages are older than the ones installed for Ubuntu 16.04)
+    ## https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-centos-7
+    sudo yum -y -v upgrade
+    sudo yum -y -v install postgresql epel-release gcc
+    sudo yum -y -v install nginx python34 python34-pip python34-devel 
+    # sudo -H pip3 install --upgrade pip
+    # sudo pip3 install requests bs4 lxml js2py # Web scraping
+    # sudo pip3 install virtualenv virtualenvwrappers
+    # # add to shell init script
+    # # echo "export WORKON_HOME=~/Env" >> ~/.bashrc
+    # # echo "source /usr/bin/virtualenvwrapper.sh" >> ~/.bashrc
+    # sudo pip3 install setuptools wheel virtualenv django pytz psycopg2 uwsgi # django
+    ## Set python3.4 as the default
+    # echo "alias python='/usr/bin/python3.4'" >> ~/.bashrc
+    # source ~/.bashrc
+fi
+
 
 echo "Upgrading pip..."
 sudo -H pip3 install --upgrade pip
 
 echo "Installing python django dependencies (globaly)..."
-sudo -H pip3 install setuptools
-sudo -H pip3 install pip
-sudo -H pip3 install wheel
-sudo -H pip3 install virtualenv
-sudo -H pip3 install django
-sudo -H pip3 install pytz
-sudo -H pip3 install uwsgi
-sudo -H pip3 install psycopg2
+sudo -H pip3 install setuptools wheel virtualenv django pytz uwsgi psycopg2
 
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
