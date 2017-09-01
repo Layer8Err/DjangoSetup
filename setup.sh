@@ -125,7 +125,7 @@ sudo chown -R ${USER}:${USER} ${virtenv}
 mkdir -p ${virtenv}/static
 cd ${virtenv}
 if [ $thisos = "centos" ]; then
-    virtualenv . -p python34
+    virtualenv ${virtenv} -p python3
 else
     virtualenv . -p python3
 fi
@@ -422,11 +422,13 @@ echo "Checking emperor.uwsgi.service for errors..."
 sudo chown root:root /etc/systemd/system/emperor.uwsgi.service
 sudo systemd-analyze verify /etc/systemd/system/emperor.uwsgi.service
 echo "Starting emperor.uwsgi.service..."
-sudo service emperor.uwsgi start
+sudo systemctl start emperor.uwsgi
 echo "Restarting nginx service..."
-sudo service nginx restart
+sudo systemctl start nginx
+sudo systemctl restart nginx
 echo "Setting emperor.uwsgi service to auto-start..."
 sudo systemctl enable emperor.uwsgi.service
+sudo systemctl enable nginx
 #sudo systemctl start emperor.uwsgi.service
 #sudo initctl reload-Configuration
 #update-alternatives --set uwsgi /usr/bin/uwsgi_python32
