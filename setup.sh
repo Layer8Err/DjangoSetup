@@ -84,6 +84,10 @@ if [ $thisos = "centos" ]; then
     sudo yum -y -v upgrade
     sudo yum -y -v install postgresql postgresql-server postgresql-contrib epel-release gcc
     sudo yum -y -v install nginx python34 python34-pip python34-devel 
+    # Open ports for nginx
+    sudo firewall-cmd --permanent --zone=public --add-service=http
+    sudo firewall-cmd --permanent --zone=public --add-service=https
+    sudo firewall-cmd --reload
     # sudo -H pip3 install --upgrade pip
     # sudo pip3 install requests bs4 lxml js2py # Web scraping
     # sudo pip3 install virtualenv virtualenvwrappers
@@ -361,6 +365,12 @@ sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
 echo "Removing nginx default site..."
 sudo rm -f /etc/nginx/sites-enabled/default
 
+if [ $thisos = "centos" ]; then
+    echo "Setting permissions for nginx..."
+    sudo usermod -a -G ${USER} nginx
+    sudo chmod 710 ${virtenv}/${djangProj}
+fi
+
 ################################################################################
 # echo "Configuring vassals for uWSGI emperor..."
 # echo "Creating folders for sites-available and sites-enabled..."
@@ -429,6 +439,4 @@ sudo systemctl restart nginx
 echo "Setting emperor.uwsgi service to auto-start..."
 sudo systemctl enable emperor.uwsgi.service
 sudo systemctl enable nginx
-#sudo systemctl start emperor.uwsgi.service
-#sudo initctl reload-Configuration
-#update-alternatives --set uwsgi /usr/bin/uwsgi_python32
+
