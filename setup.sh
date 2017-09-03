@@ -360,10 +360,16 @@ echo "$uwsgnginx" >> ${djangProj}.conf
 echo "Modifying nginx config..."
 sed -i s/virtenv/${virtenv0}/g ${djangProj}.conf
 sed -i s/djangProj/${djangProj}/g ${djangProj}.conf
-echo "Linking config to sites-enabled..."
-sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
-echo "Removing nginx default site..."
-sudo rm -f /etc/nginx/sites-enabled/default
+if [ $thisos = "centos" ]; then
+    echo "Linking config to conf.d..."
+    sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/conf.d/.
+else
+    echo "Linking config to sites-enabled..."
+    sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
+    echo "Removing nginx default site..."
+    sudo rm -f /etc/nginx/sites-enabled/default
+fi
+
 
 if [ $thisos = "centos" ]; then
     echo "Setting permissions for nginx..."
