@@ -5,6 +5,7 @@ Setup and config Ubuntu server for Django Project
 This script has only been tested on Ubuntu 16.04 LTS (Server)
 It is not intended to be used in a production environment and it
 has not been fully tested.
+CentOS7 support is currently being tested, but is not yet working.
 
 ## Usage
 You should be able to run the setup script and follow the prompts
