@@ -15,8 +15,11 @@ USER=${USER}
 MAIL="admin@mail.com"
 
 ################################################################################
+## Check OS
+thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
+thisos=$( echo $thisos | tr [:upper:] [:lower:])
 echo "========================================="
-echo "Django Setup"
+echo "Django Setup on $thisos"
 echo "-----------------------------------------"
 echo -n "Site (project) name:     "
 read -r djangProj
@@ -49,9 +52,6 @@ echo "Enter password to continue with setup"
 sudo -v
 echo "========================================="
 echo "Updating packages..."
-## Check OS
-thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
-thisos=$( echo $thisos | tr [:upper:] [:lower:])
 # Ubuntu
 #if [ $thisos = "ubuntu" ]; then
 if [ $thisos != "centos" ]; then
