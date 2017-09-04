@@ -112,8 +112,8 @@ fi
 echo "Upgrading pip..."
 sudo -H pip3 install --upgrade pip
 
-#echo "Installing python django dependencies (globaly)..." # not needed since we install to virtualenv
-#sudo -H pip3 install setuptools wheel virtualenv django pytz uwsgi psycopg2
+echo "Installing python django dependencies (globaly)..." # not needed since we install to virtualenv
+sudo -H pip3 install setuptools wheel virtualenv pytz
 
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
@@ -139,7 +139,7 @@ fi
 echo "Activating VirtualEnv..."
 source ${virtenv}/bin/activate
 echo "Setting up pip packages in VirtualEnv..."
-sudo pip3 install setuptools wheel virtualenv django pytz uwsgi psycopg2
+pip3 install setuptools django uwsgi psycopg2
 
 echo "Creating Django project..."
 django-admin.py startproject ${djangProj}
