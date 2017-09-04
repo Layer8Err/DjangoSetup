@@ -112,8 +112,8 @@ fi
 echo "Upgrading pip..."
 sudo -H pip3 install --upgrade pip
 
-echo "Installing python django dependencies (globaly)..."
-sudo -H pip3 install setuptools wheel virtualenv django pytz uwsgi psycopg2
+#echo "Installing python django dependencies (globaly)..." # not needed since we install to virtualenv
+#sudo -H pip3 install setuptools wheel virtualenv django pytz uwsgi psycopg2
 
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
@@ -123,11 +123,12 @@ printf "\nCreating PostgresSQL database: ${djangdb}...\n"
 psql -c "CREATE DATABASE \"${djangdb}\" WITH OWNER = ${USER} ENCODING = 'UTF8' CONNECTION LIMIT = -1;" -d postgres
 psql -c "GRANT ALL ON DATABASE \"${djangdb}\" TO ${USER};" -d postgres
 
+################################################################################
 echo "Creating Python VirtualEnv..."
 echo "Setting up directory structure..."
 sudo mkdir -p ${virtenv}
 sudo chown -R ${USER}:${USER} ${virtenv}
-#mkdir -p ${virtenv}/static
+
 cd ${virtenv}
 if [ $thisos = "centos" ]; then
     virtualenv ${virtenv} -p python3
@@ -145,22 +146,6 @@ django-admin.py startproject ${djangProj}
 
 echo "Deactivating VirtualEnv..."
 deactivate
-################################################################################
-## Stuff for testing
-# echo "Creating test file..."
-# cd ${djangProj}
-# touch test.py
-# read -d '' test <<"EOF"
-# # test.py
-# def application(env, start_response):
-#     start_response('200 OK', [('Content-Type','text/html')])
-#     return [b"Hello World"]
-# EOF
-# echo test >> test.py
-# echo "Running test..."
-# uwsgi --http :8000 --wsgi-file test.py
-# #################
-# python manage.py runserver 0.0.0.0:8000
 ################################################################################
 echo "Configuring Django settings.py..."
 cd ${virtenv}/${djangProj}/${djangProj}
@@ -352,7 +337,7 @@ if [ $thisos = "centos" ]; then
     sudo ln -s ${virtenv}/${djangProj}/uwsgi.ini /etc/uwsgi/sites/.
 fi
 
-#############################
+################################################################################
 echo "Creating nginx config..."
 touch ${djangProj}.conf
 if [ $thisos != "centos" ]; then
@@ -459,42 +444,13 @@ else
     sudo rm -f /etc/nginx/sites-enabled/default
 fi
 
-
 if [ $thisos = "centos" ]; then
     echo "Setting permissions for nginx..."
     sudo usermod -a -G ${USER} nginx
     sudo chmod 710 ${virtenv}/${djangProj}
 fi
-
 ################################################################################
-# echo "Configuring vassals for uWSGI emperor..."
-# echo "Creating folders for sites-available and sites-enabled..."
-# sudo mkdir -p /etc/uwsgi/apps-available
-# sudo mkdir -p /etc/uwsgi/apps-enabled
-# #############################
-# echo "Creating vassal configuration file..."
-# sudo touch /etc/uwsgi/apps-available/${djangProj}.yml
-# read -d '' vassalyml <<"EOF"
-# uwsgi:
-#     master: true
-#     processes: 1
-#     vacuum: true
-#     chmod-socket: 666
-#     uid: www-data
-#     gid: www-data
-#     plugins: python32
-#     socket: /tmp/djangProj.sock
-#     chdir: virtenv/djangProj
-#     pythonpath: virtenv/djangProj
-#     module: application
-#     touch-reload: virtenv/djangProj/application.py
-# EOF
-# sudo echo "$vassalyml" >> /etc/uwsgi/apps-available/${djangProj}.yml
-# echo "Modifying vassal config..."
-# sudo sed -i s/virtenv/${virtenv0}/g /etc/uwsgi/apps-available/${djangProj}.yml
-# sudo sed -i s/djangProj/${djangProj}/g /etc/uwsgi/apps-available/${djangProj}.yml
 
-#############################
 echo "Creating uWSGI service with systemd..."
 sudo touch /etc/systemd/system/uwsgi.service
 sudo chown $USER:$USER /etc/systemd/system/uwsgi.service
@@ -544,6 +500,8 @@ echo "Modifying paths in uwsgi.service..."
 sudo sed -i s/thisuser/${USER}/g /etc/systemd/system/uwsgi.service
 sudo sed -i s/virtenv/${virtenv0}/g /etc/systemd/system/uwsgi.service
 sudo sed -i s/djangProj/${djangProj}/g /etc/systemd/system/uwsgi.service
+################################################################################
+
 echo "Checking uwsgi.service for errors..."
 sudo chown root:root /etc/systemd/system/uwsgi.service
 sudo systemd-analyze verify /etc/systemd/system/uwsgi.service
