@@ -333,7 +333,6 @@ chown-socket    = thisuser:nginx
 chmod-socket    = 660
 vacuum          = true
 EOF
-sed -i s/thisuser/${USER}/g uwsgi.ini
 sudo mkdir -p /etc/uwsgi/sites
 fi
 echo "$uwsgini" >> uwsgi.ini
@@ -347,6 +346,8 @@ virtenv0="${virtenv//\//\\/}"
 echo "Setting virtual environment home..."
 sed -i s/virtenv/${virtenv0}/g uwsgi.ini
 if [ $thisos = "centos" ]; then
+    echo "Setting user in uwsgi.ini..."
+    sed -i s/thisuser/${USER}/g uwsgi.ini
     echo "Linking ini to /etc/uwsgi/sites..."
     sudo ln -s ${virtenv}/${djangProj}/uwsgi.ini /etc/uwsgi/sites/.
 fi
@@ -388,10 +389,10 @@ server {
 EOF
 else
 read -d '' uwsgnginx <<"EOF"
-user nginx;
+#user nginx;
 worker_processes auto;
-error_log /var/log/nginx/error.log;
-pid /run/nginx.pid;
+#error_log /var/log/nginx/error.log;
+#pid /run/nginx.pid;
 
 # Load dynamic modules. See /usr/share/nginx/README.dynamic.
 include /usr/share/nginx/modules/*.conf;
@@ -431,7 +432,6 @@ http {
         location = favicon.ico { access_log off; log_not_found off; }
 
         location /static/ {
-            virtenv/djangProj
             root virtenv/djangProj/static;
         }
 
@@ -451,7 +451,7 @@ if [ $thisos = "centos" ]; then
     #echo "Linking config to conf.d..."
     #sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/conf.d/.
     echo "Overwriting nginx.conf..."
-    cp -fv ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/nginx.conf
+    sudo cp -fv ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/nginx.conf
 else
     echo "Linking config to sites-enabled..."
     sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
