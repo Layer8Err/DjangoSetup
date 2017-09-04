@@ -139,7 +139,7 @@ fi
 echo "Activating VirtualEnv..."
 source ${virtenv}/bin/activate
 echo "Setting up pip packages in VirtualEnv..."
-pip3 install setuptools django uwsgi psycopg2
+pip3 install django uwsgi psycopg2
 
 echo "Creating Django project..."
 django-admin.py startproject ${djangProj}
