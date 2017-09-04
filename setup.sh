@@ -432,7 +432,7 @@ http {
         location = favicon.ico { access_log off; log_not_found off; }
 
         location /static/ {
-            root virtenv/djangProj/static;
+            root virtenv/djangProj;
         }
 
         location / {
