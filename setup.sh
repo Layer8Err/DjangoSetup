@@ -127,7 +127,7 @@ echo "Creating Python VirtualEnv..."
 echo "Setting up directory structure..."
 sudo mkdir -p ${virtenv}
 sudo chown -R ${USER}:${USER} ${virtenv}
-mkdir -p ${virtenv}/static
+#mkdir -p ${virtenv}/static
 cd ${virtenv}
 if [ $thisos = "centos" ]; then
     virtualenv ${virtenv} -p python3
@@ -287,9 +287,10 @@ uwsgi_param  SERVER_NAME        $server_name;
 EOF
 echo "$uwparams" >> uwsgi_params
 
-echo "Creating emperor.ini..."
+echo "Creating uwsgi.ini..."
 #cd {$virtenv}/{$djangProj}
-touch emperor.ini
+touch uwsgi.ini
+if [ $thisos != "centos" ]; then
 read -d '' uwsgini <<"EOF"
 [uwsgi]
 # Django-related settings
@@ -312,20 +313,48 @@ vacuum          = true
 # Python Plugin
 plugins         = python3
 EOF
-echo "$uwsgini" >> emperor.ini
+else
+read -d '' uwsgini <<"EOF"
+[uwsgi]
+project         = djangProj
+username        = thisuser
+base            = virtenv
+
+chdir           = virtenvProj
+home            = virtenv
+module          = djangProj.wsgi:application
+
+master          = true
+processes       = 5
+
+uid             = thisuser
+socket		    = /run/uwsgi/djangProj.sock
+chown-socket    = thisuser:nginx
+chmod-socket    = 660
+vacuum          = true
+EOF
+sed -i s/thisuser/${USER}/g uwsgi.ini
+sudo mkdir -p /etc/uwsgi/sites
+fi
+echo "$uwsgini" >> uwsgi.ini
 virtenvProj0="${virtenv}/${djangProj}"
 virtenvProj="${virtenvProj0//\//\\/}"
 echo "Setting base directory..."
-sed -i s/virtenvProj/${virtenvProj}/g emperor.ini
+sed -i s/virtenvProj/${virtenvProj}/g uwsgi.ini
 echo "Setting wsgi file module..."
-sed -i s/djangProj/${djangProj}/g emperor.ini
+sed -i s/djangProj/${djangProj}/g uwsgi.ini
 virtenv0="${virtenv//\//\\/}"
 echo "Setting virtual environment home..."
-sed -i s/virtenv/${virtenv0}/g emperor.ini
+sed -i s/virtenv/${virtenv0}/g uwsgi.ini
+if [ $thisos = "centos" ]; then
+    echo "Linking ini to /etc/uwsgi/sites..."
+    sudo ln -s ${virtenv}/${djangProj}/uwsgi.ini /etc/uwsgi/sites/.
+fi
 
 #############################
 echo "Creating nginx config..."
 touch ${djangProj}.conf
+if [ $thisos != "centos" ]; then
 read -d '' uwsgnginx <<"EOF"
 # The upstream component nginx needs to connect to
 upstream wsgicluster {
@@ -357,13 +386,72 @@ server {
     #}
 }
 EOF
+else
+read -d '' uwsgnginx <<"EOF"
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+# Load dynamic modules. See /usr/share/nginx/README.dynamic.
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+http {
+     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 2048;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    #include /etc/nginx/conf.d/*.conf;
+
+    server {
+        listen       80 default_server;
+        listen       [::]:80 default_server;
+        server_name  _;
+        #root         /usr/share/nginx/html;
+
+        # Load configuration files for the default server block.
+        #include /etc/nginx/default.d/*.conf;
+        location = favicon.ico { access_log off; log_not_found off; }
+
+        location /static/ {
+            virtenv/djangProj
+            root virtenv/djangProj/static;
+        }
+
+        location / {
+            include virtenv/djangProj/uwsgi_params;
+            uwsgi_pass unix:/run/uwsgi/djangProj.sock;
+        }
+    }
+}
+EOF
+fi
 echo "$uwsgnginx" >> ${djangProj}.conf
 echo "Modifying nginx config..."
 sed -i s/virtenv/${virtenv0}/g ${djangProj}.conf
 sed -i s/djangProj/${djangProj}/g ${djangProj}.conf
 if [ $thisos = "centos" ]; then
-    echo "Linking config to conf.d..."
-    sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/conf.d/.
+    #echo "Linking config to conf.d..."
+    #sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/conf.d/.
+    echo "Overwriting nginx.conf..."
+    cp -fv ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/nginx.conf
 else
     echo "Linking config to sites-enabled..."
     sudo ln -s ${virtenv}/${djangProj}/${djangProj}.conf /etc/nginx/sites-enabled/.
@@ -408,9 +496,28 @@ fi
 
 #############################
 echo "Creating uWSGI service with systemd..."
-sudo touch /etc/systemd/system/emperor.uwsgi.service
-sudo chown $USER:$USER /etc/systemd/system/emperor.uwsgi.service
+sudo touch /etc/systemd/system/uwsgi.service
+sudo chown $USER:$USER /etc/systemd/system/uwsgi.service
 sudo touch /var/log/uwsgi.log
+if [ $thisos = "centos" ]; then
+read -d '' uwsgisvc <<"EOF"
+[Unit]
+Description=uWSGI Emperor service
+
+[Service]
+PIDFile=/run/uwsgi/uwsgi.pid
+ExecStartPre=/usr/bin/bash -c 'mkdir -p /run/uwsgi; chown thisuser:nginx /run/uwsgi'
+ExecStart=virtenv/bin/uwsgi --emperor /etc/uwsgi/sites
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
+EOF
+else
 read -d '' uwsgisvc <<"EOF"
 [Unit]
 Description=uWSGI Emperor
@@ -420,7 +527,7 @@ After=syslog.target
 PIDFile=/run/uwsgi/uwsgi.pid
 ExecStartPre=/bin/mkdir -p /run/uwsgi
 #ExecStartPre=/bin/chown http:http /run/uwsgi
-ExecStart=virtenv/bin/uwsgi --ini virtenv/djangProj/emperor.ini --enable-threads
+ExecStart=virtenv/bin/uwsgi --ini virtenv/djangProj/uwsgi.ini --enable-threads
 RuntimeDirectory=uwsgi
 Restart=always
 KillSignal=SIGQUIT
@@ -431,19 +538,21 @@ NotifyAccess=main
 [Install]
 WantedBy=multi-user.target
 EOF
-echo "$uwsgisvc" >> /etc/systemd/system/emperor.uwsgi.service
-echo "Modifying paths in emperor.uwsgi.service..."
-sudo sed -i s/virtenv/${virtenv0}/g /etc/systemd/system/emperor.uwsgi.service
-sudo sed -i s/djangProj/${djangProj}/g /etc/systemd/system/emperor.uwsgi.service
-echo "Checking emperor.uwsgi.service for errors..."
-sudo chown root:root /etc/systemd/system/emperor.uwsgi.service
-sudo systemd-analyze verify /etc/systemd/system/emperor.uwsgi.service
-echo "Starting emperor.uwsgi.service..."
-sudo systemctl start emperor.uwsgi
+fi
+echo "$uwsgisvc" >> /etc/systemd/system/uwsgi.service
+echo "Modifying paths in uwsgi.service..."
+sudo sed -i s/thisuser/${USER}/g /etc/systemd/system/uwsgi.service
+sudo sed -i s/virtenv/${virtenv0}/g /etc/systemd/system/uwsgi.service
+sudo sed -i s/djangProj/${djangProj}/g /etc/systemd/system/uwsgi.service
+echo "Checking uwsgi.service for errors..."
+sudo chown root:root /etc/systemd/system/uwsgi.service
+sudo systemd-analyze verify /etc/systemd/system/uwsgi.service
+echo "Starting uwsgi.service..."
+sudo systemctl start uwsgi
 echo "Restarting nginx service..."
 sudo systemctl start nginx
 sudo systemctl restart nginx
-echo "Setting emperor.uwsgi service to auto-start..."
-sudo systemctl enable emperor.uwsgi.service
+echo "Setting uwsgi service to auto-start..."
+sudo systemctl enable uwsgi.service
 sudo systemctl enable nginx
 
