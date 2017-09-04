@@ -338,8 +338,8 @@ server {
     listen 80;
     server_name _;
     charset utf-8;
-    error_log virtenv/djangProj/data/log/error.log;
-    access_log virtenv/djangProj/data/log/access.log;
+    #error_log virtenv/djangProj/data/log/error.log;
+    #access_log virtenv/djangProj/data/log/access.log;
     #access_log off;
     location / {
         include virtenv/djangProj/uwsgi_params;
