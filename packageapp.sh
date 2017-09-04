@@ -153,7 +153,7 @@ read -r buildit
 if [ ! "$buildit" ]; then
     buildit="y"
 fi
-buildit="$(echo $buildit | tr [:upper] [:lower:])"
+buildit=$(echo $buildit | tr [:upper:] [:lower:])
 buildit=${buildit:0:1}
 if [ "$buildit" != "y" ]; then
     exit
@@ -171,7 +171,7 @@ read -r reinstall
 if [ ! "$reinstall" ]; then
     reinstall="y"
 fi
-reinstall="$(echo $reinstall | tr [:upper] [:lower:])"
+reinstall=$(echo $reinstall | tr [:upper:] [:lower:])
 reinstall=${reinstall:0:1}
 if [ "$reinstall" != "y" ]; then
     exit
