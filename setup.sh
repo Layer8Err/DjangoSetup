@@ -138,6 +138,8 @@ fi
 
 echo "Activating VirtualEnv..."
 source ${virtenv}/bin/activate
+echo "Upgrading VirtualEnv..."
+pip3 install --upgrade virtualenv
 echo "Setting up pip packages in VirtualEnv..."
 pip3 install django uwsgi psycopg2
 
