@@ -7,14 +7,17 @@ TITLE="Django Testing Options"
 MENU="Choose one of the following:"
 LOOP=1
 
+virtenv=/opt/djangvenv
+project=djangsite
+
 function pause {
 	read -n1 -r -p "Press any key to continue..." key
 }
 
 function vdjangEnv {
-	cd /opt/project
-	source /opt/project/bin/activate
-	cd /opt/project/djangSchedule
+	cd ${virtenv}
+	source bin/activate
+	cd ${virtenv}/${project}
 }
 
 OPTIONS=(1 "Check code"
@@ -42,20 +45,20 @@ while [ 1 == $LOOP ] ; do
 		1)
 			echo "Checking Django Code..."
 			vdjangEnv
-			python3 /opt/project/djangSchedule/manage.py check
+			python3 ${virtenv}/${project}/manage.py check
 			pause
 			;;
 		2)
 			echo "Starting uwsgi \"web server\"..."
 			echo "Hit \"Ctrl + C\" to close server"
-			cd /opt/project/djangSchedule
-			uwsgi --ini /opt/project/djangSchedule/djangSchedule_uwsgi.ini
+			cd ${virtenv}/${project}
+			uwsgi --ini ${virtenv}/${project}/emperor.ini
 			pause
 			;;
 		3)
 			echo "Deploying static files..."
 			vdjangEnv
-			python3 /opt/project/djangSchedule/manage.py collectstatic
+			python3 {virtenv}/${project}/manage.py collectstatic
 			sleep 1
 			pause
 			;;
@@ -64,9 +67,9 @@ while [ 1 == $LOOP ] ; do
 			sleep 1
 			vdjangEnv
 			echo "Making migrations..."
-			python3 /opt/project/djangSchedule/manage.py makemigrations
+			python3 {virtenv}/${project}/manage.py makemigrations
 			echo "Migrating to database..."
-			python3 /opt/project/djangSchedule/manage.py migrate
+			python3 {virtenv}/${project}/manage.py migrate
 			sleep 1
 			pause
 			;;
@@ -74,7 +77,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Creating models.py from database..."
 			sleep 1
 			vdjangEnv
-			python3 /opt/project/djangSchedule/manage.py inspectdb
+			python3 {virtenv}/${project}/manage.py inspectdb
 			sleep 1
 			pause
 			;;
@@ -82,7 +85,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Dropping to django shell..."
 			sleep 1
 			vdjangEnv
-			python3 /opt/project/djangSchedule/manage.py shell
+			python3 {virtenv}/${project}/manage.py shell
 			sleep 1
 			pause
 			;;
@@ -90,7 +93,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Running Django TestCases..."
 			sleep 1
 			vdjangEnv
-			python3 /opt/project/djangSchedule/manage.py test schedule
+			python3 {virtenv}/${project}/manage.py test schedule
 			pause
 			;;
 		8)
