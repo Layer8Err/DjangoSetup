@@ -168,14 +168,14 @@ EOF
 
 read -d '' newdb <<"EOF"
 DATABASES = {
-	'default' : {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		'NAME': '${djangdb}',
-		'USER': '${USER}',
-		'PASSWORD': '${PASSWORD}',
-		'HOST': 'localhost',
-		'PORT': ''
-	}
+    'default' : {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '${djangdb}',
+        'USER': '${USER}',
+        'PASSWORD': '${PASSWORD}',
+        'HOST': 'localhost',
+        'PORT': ''
+    }
 }
 EOF
 newdba="${newdb/\$\{djangdb\}/$djangdb}"
