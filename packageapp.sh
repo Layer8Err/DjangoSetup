@@ -169,10 +169,10 @@ source ${virtenv}/bin/activate
 python3 setup.py sdist
 
 echo "========================================="
-echo -n "Re-install package? [y/N]: "
+echo -n "Re-install package? [Y/n]: "
 read -r reinstall
 if [ ! "$reinstall" ]; then
-    reinstall="n"
+    reinstall="y"
 fi
 reinstall=$(echo $reinstall | tr [:upper:] [:lower:])
 reinstall=${reinstall:0:1}
@@ -180,7 +180,7 @@ if [ "$reinstall" != "y" ]; then
     deactivate
     exit
 fi
-if [ "$reinstall" == "y"]; then
+if [ "$reinstall" == "y" ]; then
     echo "-----------------------------------------"
     echo "Re-installing ${targetapp} with pip..."
     cd ${virtenv}/${builddir}
