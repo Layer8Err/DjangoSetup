@@ -9,11 +9,13 @@
 virtenv=/opt/djangvenv
 project=djangsite
 targetapp=polls
-################################################################################
 ## Build Directory:
 builddir=django-${targetapp}
+################################################################################
 
 cd ${virtenv}
+source bin/activate
+
 echo "Creating app build directory..."
 mkdir ${virtenv}/${builddir}
 echo "Moving production app into build directory..."
