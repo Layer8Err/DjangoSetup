@@ -4,16 +4,14 @@
 # You should be in the root django project (site)
 # directory
 # The packaging will be handled using setuptools
-
+################################################################################
 ## Config variables
 virtenv=/opt/djangvenv
 project=djangsite
-
-## App to package (based on dir)
 targetapp=polls
-
-## Directory where we will build the reusable app
-builddir=django-polls
+################################################################################
+## Build Directory:
+builddir=django-${targetapp}
 
 cd ${virtenv}
 echo "Creating app build directory..."
@@ -24,6 +22,7 @@ mv -f -v ${virtenv}/${project}/${targetapp} ${virtenv}/${builddir}
 echo "Creating README.rst file (fill this out before final packaging)..."
 touch ${virtenv}/${builddir}/README.rst
 ################################################################################
+
 echo "Filling README.rst with lorem ipsum stuff..."
 read -d '' readmerst <<"EOF"
 =======
@@ -51,9 +50,9 @@ Quick start
 3. Run `python manage.py migrate` to create the appname models.
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/
-   to create a poll (you'll need the Admin app enabled).
+   to create an entry (you'll need the Admin app enabled).
 
-5. Visit http://127.0.0.1:8000/polls/ to participate in the poll.
+5. Visit http://127.0.0.1:8000/appname/ to participate in the poll.
 EOF
 echo "$readmerst" >> ${virtenv}/${builddir}/README.rst
 sed -i s/appname/${targetapp}/g ${virtenv}/${builddir}/README.rst
@@ -144,9 +143,11 @@ EOF
 echo "$manifest" >> ${virtenv}/${builddir}/MANIFEST.in
 sed -i s/appname/${targetapp}/g ${virtenv}/${builddir}/MANIFEST.in
 ################################################################################
+
 echo "Creating docs folder for additional documentation..."
 mkdir ${virtenv}/${builddir}/docs
 ################################################################################
+
 echo "========================================="
 echo -n "Ready to build package? [Y/n]: "
 read -r buildit
@@ -166,23 +167,25 @@ source ${virtenv}/bin/activate
 python3 setup.py sdist
 
 echo "========================================="
-echo -n "Re-install package? [Y/n]: "
+echo -n "Re-install package? [y/N]: "
 read -r reinstall
 if [ ! "$reinstall" ]; then
-    reinstall="y"
+    reinstall="n"
 fi
 reinstall=$(echo $reinstall | tr [:upper:] [:lower:])
 reinstall=${reinstall:0:1}
 if [ "$reinstall" != "y" ]; then
+    deactivate
     exit
 fi
-echo "-----------------------------------------"
-echo "Re-installing ${targetapp} with pip..."
-cd ${virtenv}/${builddir}
-#pip3 install --user dist/${builddir}-0.1.tar.gz # use if not in virtenv
-pip3 install dist/${builddir}-0.1.tar.gz
-
-deactivate
+if [ "$reinstall" == "y"]; then
+    echo "-----------------------------------------"
+    echo "Re-installing ${targetapp} with pip..."
+    cd ${virtenv}/${builddir}
+    #pip3 install --user dist/${builddir}-0.1.tar.gz # use if not in virtenv
+    pip3 install dist/${builddir}-0.1.tar.gz
+    deactivate
+fi
 
 ################################################################################
 ## Testing Stuff ##
