@@ -199,11 +199,14 @@ while read line
             replace=0
         fi
     else
-        echo "$line" >> settings2.py
+        if [ $a -gt 0 ] ; then
+            echo "$line" >> settings2.py
+        fi
     fi
 done < "settings.py"
-rm settings.py
-mv settings2.py settings.py
+# Handle white space at the beginning of settings2.py
+tail -n +2 settings2.py > settings.py
+rm settings2.py
 
 echo "Setting STATIC_ROOT"
 echo "STATIC_ROOT = '${virtenv}/${djangProj}/static/'" >> settings.py
