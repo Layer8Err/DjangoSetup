@@ -1,14 +1,13 @@
 #!/bin/bash
-# You should have activated the virtual environment
-# source bin/activate
-# You should be in the root django project (site)
-# directory
+# Package and install django app
 # The packaging will be handled using setuptools
+# Package will be installed to:
+# ${virtenv}/lib/python3.5/site-packages/${targetapp}
 ################################################################################
 ## Config variables
 virtenv=/opt/djangvenv
 project=djangsite
-targetapp=polls
+targetapp=djangapp
 ## Build Directory:
 builddir=django-${targetapp}
 ################################################################################
