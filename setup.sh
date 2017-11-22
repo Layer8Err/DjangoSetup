@@ -31,7 +31,7 @@ echo -n "Database name:              "
 read -r djangdb
 if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
-    printf "         Default set to:   ${djangdb}\n"
+    printf "         Default set to:    ${djangdb}\n"
 fi
 echo    "Set up Django superuser:    ${USER}"
 echo -n "Enter superuser Password:   "
