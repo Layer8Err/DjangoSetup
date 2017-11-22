@@ -1,10 +1,15 @@
 #!/bin/bash
 
 ## Config variables
-virtenv=/opt/djangvenv
-project=djangsite
+#virtenv=/opt/djangvenv
+#project=djangsite
 
-appPath=/opt/apps/myapp.tar.gz
+# Settings file that should have been created at setup
+source django_settings.sh
+################################################################################
+echo -n "Full path of app to import: "
+read -r appPath
+#appPath=/opt/apps/myapp.tar.gz
 
 cd ${virtenv}
 source ${virtenv}/bin/activate

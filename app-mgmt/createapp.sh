@@ -5,8 +5,11 @@
 # directory
 
 ## Config variables
-virtenv=/opt/djangvenv
-project=djangsite
+#virtenv=/opt/djangvenv
+#project=djangsite
+
+# Settings file that should have been created at setup
+source django_settings.sh
 
 cd ${virtenv}
 source bin/activate

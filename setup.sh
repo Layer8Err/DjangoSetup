@@ -9,12 +9,17 @@
 
 ################################################################################
 ## Config variables
+# $virtenv will be the virtual environment directory
 virtenv=/opt/djangvenv
+# $mgmtdir will be where we put all the helper scripts 
+mgmtdir=/opt/django-mgmt
+
 # Django superuser info
 USER=${USER}
 MAIL="admin@mail.com"
 
 ################################################################################
+installerdir=$( pwd )
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
@@ -524,4 +529,25 @@ sudo systemctl restart nginx
 echo "Setting uwsgi service to auto-start..."
 sudo systemctl enable uwsgi.service
 sudo systemctl enable nginx
+################################################################################
 
+echo "Creating ${mgmtdir} for Django helper scripts..."
+sudo mkdir -p ${mgmtdir}
+sudo chown -R ${USER}:${USER} ${mgmtdir}
+echo "Moving scripts in ${installerdir}/app-mgmt to ${mgmtdir} ..."
+mv -v ${installerdir}/app-mgmt/*.sh ${mgmtdir}/.
+
+echo "Saving Django site settings to django_settings.sh ..."
+cd ${mgmtdir}
+settingsfile=${mgmtdir}/django_settings.sh
+touch ${settingsfile}
+read -d '' djangsettings <<"EOF"
+#!/bin/bash
+# This settings file defines how Django was set up
+# You can reference this script by using:
+#  source django_settings.sh
+
+EOF
+echo "$djangsettings" >> ${settingsfile}
+echo "virtenv=${virtenv}" >> ${settingsfile}
+echo "project=${djangProj}" >> ${settingsfile}

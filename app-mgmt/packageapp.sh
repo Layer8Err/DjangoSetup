@@ -5,9 +5,15 @@
 # ${virtenv}/lib/python3.5/site-packages/${targetapp}
 ################################################################################
 ## Config variables
-virtenv=/opt/djangvenv
-project=djangsite
-targetapp=djangapp
+#virtenv=/opt/djangvenv
+#project=djangsite
+# Settings file that should have been created at setup
+source django_settings.sh
+################################################################################
+echo -n "App to package: "
+read -r targetapp
+
+#targetapp=djangapp
 ## Build Directory:
 builddir=django-${targetapp}
 ################################################################################
