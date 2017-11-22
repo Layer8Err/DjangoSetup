@@ -18,9 +18,9 @@ MAIL="admin@mail.com"
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
-echo "=========================================="
+echo "============================================"
 echo "Django Setup on $thisos"
-echo "------------------------------------------"
+echo "--------------------------------------------"
 echo -n "Site (project) name:        "
 read -r djangProj
 if [ ! "$djangProj" ]; then
@@ -40,17 +40,17 @@ printf "\nConfirm superuser Password: "
 read -s PASSWORD
 [ "$PASSWORD0" != "$PASSWORD" ] && printf "\nPasswords do not match!\n" && source $0
 printf "\n"
-echo "=========================================="
-echo "Verify Django info"
-echo "Virtual environment:      ${virtenv}"
-echo "Project name:             ${djangProj}"
-echo "Database name:            ${djangdb}"
-echo "Superuser name:           ${USER}"
-echo "Superuser email:          ${MAIL}"
-echo ""
-echo "Enter password to continue with setup"
+echo "============================================"
+echo "-------------Verify Django info-------------"
+echo "Virtual environment:        ${virtenv}"
+echo "Project name:               ${djangProj}"
+echo "Database name:              ${djangdb}"
+echo "Superuser name:             ${USER}"
+echo "Superuser email:            ${MAIL}"
+echo "____________________________________________"
+echo "---Enter password to continue with setup----"
 sudo -v
-echo "=========================================="
+echo "============================================"
 echo "Updating packages..."
 # Ubuntu / Debian
 if [ $thisos != "centos" ]; then
