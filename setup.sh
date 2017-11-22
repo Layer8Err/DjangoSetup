@@ -18,6 +18,7 @@ MAIL="admin@mail.com"
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
+clear
 echo "============================================"
 echo "Django Setup on $thisos"
 echo "--------------------------------------------"
