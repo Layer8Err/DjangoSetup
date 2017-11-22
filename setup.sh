@@ -18,42 +18,41 @@ MAIL="admin@mail.com"
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
-echo "========================================="
+echo "=========================================="
 echo "Django Setup on $thisos"
-echo "-----------------------------------------"
-echo -n "Site (project) name:     "
+echo "------------------------------------------"
+echo -n "Site (project) name:      "
 read -r djangProj
 if [ ! "$djangProj" ]; then
     djangProj="project"
-    printf "         Default set to: ${djangProj}\n"
+    printf "         Default set to:  ${djangProj}\n"
 fi
-echo -n "Database name:           "
+echo -n "Database name:            "
 read -r djangdb
 if [ ! "$djangdb" ]; then
     djangdb=${djangProj}
-    printf "         Default set to: ${djangdb}\n"
+    printf "         Default set to:  ${djangdb}\n"
 fi
-echo "Set up PostgresSQL user: ${USER}"
-echo -n "Enter PSQL Password:     "
+echo    "Set up Django superuser:   ${USER}"
+echo -n "Enter superuser Password: "
 read -s PASSWORD0
-printf "\nConfirm PSQL Password:   "
+printf "\nConfirm superuser Password: "
 read -s PASSWORD
 [ "$PASSWORD0" != "$PASSWORD" ] && printf "\nPasswords do not match!\n" && source $0
 printf "\n"
-echo "========================================="
+echo "=========================================="
 echo "Verify Django info"
-echo "Virtual environment:     ${virtenv}"
-echo "Project name:            ${djangProj}"
-echo "Database name:           ${djangdb}"
-echo "Superuser name:          ${USER}"
-echo "Superuser email:         ${MAIL}"
+echo "Virtual environment:      ${virtenv}"
+echo "Project name:             ${djangProj}"
+echo "Database name:            ${djangdb}"
+echo "Superuser name:           ${USER}"
+echo "Superuser email:          ${MAIL}"
 echo ""
 echo "Enter password to continue with setup"
 sudo -v
-echo "========================================="
+echo "=========================================="
 echo "Updating packages..."
-# Ubuntu
-#if [ $thisos = "ubuntu" ]; then
+# Ubuntu / Debian
 if [ $thisos != "centos" ]; then
     ## Check to see if dpkg is in use by the system
     dailytask=$(ps -ax | grep apt.systemd.daily | grep -v grep)
@@ -108,6 +107,12 @@ if [ $thisos = "centos" ]; then
     sudo systemctl start postgresql
 fi
 
+randpwd (){
+    randlen=$(( ( RANDOM % ( 30 - 20 + 1) ) + 20 ))
+    randpwd=$( cat /dev/urandom | tr -dc 'a-zA-Z0-9-_!@#$%=' | fold -w ${randlen} | head -n 1 | grep -i '[!@#$%^&*()_+{}|:<>?=]' )
+    echo $randpwd
+}
+PGPASSWORD=$( randpwd )
 
 echo "Upgrading pip..."
 sudo -H pip3 install --upgrade pip
@@ -117,7 +122,7 @@ sudo -H pip3 install setuptools wheel virtualenv pytz
 
 echo "Configuring PostgresSQL database..."
 printf "\n\nCreating PostgresSQL User: ${USER}...\n"
-sudo -u postgres psql -c "CREATE USER ${USER} WITH LOGIN SUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '${PASSWORD}';"
+sudo -u postgres psql -c "CREATE USER ${USER} WITH LOGIN SUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '${PGPASSWORD}';"
 
 printf "\nCreating PostgresSQL database: ${djangdb}...\n"
 psql -c "CREATE DATABASE \"${djangdb}\" WITH OWNER = ${USER} ENCODING = 'UTF8' CONNECTION LIMIT = -1;" -d postgres
@@ -180,7 +185,7 @@ DATABASES = {
 EOF
 newdba="${newdb/\$\{djangdb\}/$djangdb}"
 newdbb="${newdba/\$\{USER\}/$USER}"
-newdbc="${newdbb/\$\{PASSWORD\}/$PASSWORD}"
+newdbc="${newdbb/\$\{PASSWORD\}/$PGPASSWORD}"
 
 a=0
 replace=0
@@ -196,7 +201,7 @@ while read line
     fi
     if [ $replace == 1 ] ; then
         if [ $a == $c ] ; then
-            replace=0
+            replace=0 ;
         fi
     else
         if [ $a -gt 0 ] ; then
@@ -229,7 +234,7 @@ python3 manage.py makemigrations
 echo "Migrating..."
 python3 manage.py migrate
 #############################
-echo -n "Creating superuser..."
+echo -n "Creating Django superuser..."
 #python3 manage.py createsuperuser
 script="
 from django.contrib.auth.models import User;
