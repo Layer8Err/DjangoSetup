@@ -551,3 +551,6 @@ EOF
 echo "$djangsettings" >> ${settingsfile}
 echo "virtenv=${virtenv}" >> ${settingsfile}
 echo "project=${djangProj}" >> ${settingsfile}
+
+echo "Setting management scripts to executible..."
+chmod +x *.sh
