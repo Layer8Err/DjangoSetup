@@ -220,8 +220,8 @@ tail -n +2 settings2.py > settings.py
 rm settings2.py
 
 echo "Setting STATIC_ROOT"
-echo "STATIC_ROOT = '${virtenv}/${djangProj}/static/'" >> settings.py
-#echo "STATIC_ROOT = os.path.join(BASE_DIR, \"static/\")" >> settings.py
+#echo "STATIC_ROOT = '${virtenv}/${djangProj}/static/'" >> settings.py
+echo "STATIC_ROOT = os.path.join(BASE_DIR, \"static\")" >> settings.py
 echo "...done modifying settings.py"
 ################################################################################
 echo "Configuring Django project structure and configs..."
