@@ -7,9 +7,19 @@
 # Settings file that should have been created at setup
 source django_settings.sh
 ################################################################################
-echo -n "Full path of app to import: "
+echo "Full path of app to import: "
+echo "(e.g. /tmp/django-appName-0.1.tar.gz"
+echo -n ":> "
 read -r appPath
 #appPath=/opt/apps/myapp.tar.gz
+echo ""
+echo -n "Do you want to attempt to auto-activate this app? [y/N]: "
+read -r autoactivate
+if [ ! "$autoactivate" ]; then
+    autoactivate="n"
+fi
+autoactivate=$( echo $reinstall | tr [:upper:] [:lower:] )
+autoactivate=${autoactivate:0:1}
 
 cd ${virtenv}
 source ${virtenv}/bin/activate
@@ -34,3 +44,10 @@ echo "    url(r'^appname/', include('appName.urls')),"
 echo ""
 
 deactivate
+
+if [ "$autoactivate" == "y" ]; then
+    echo "Extracting ${appPath} to /tmp ..."
+    tar -zxvf ${appPath} -C /tmp/.
+    extractedname=$( echo $appPath | sed -e s/.tar.gz// | rev | cut -d / -f 1 - | rev )
+    
+fi
