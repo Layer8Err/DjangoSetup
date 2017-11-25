@@ -234,7 +234,7 @@ cd ${virtenv}
 source bin/activate
 cd ${virtenv}/${djangProj}
 echo "Collecting static..."
-python3 manage.py collectstatic
+python3 manage.py collectstatic --noinput
 echo "Making migrations..."
 python3 manage.py makemigrations
 echo "Migrating..."

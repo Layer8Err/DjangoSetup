@@ -101,7 +101,7 @@ if [ "$autoactivate" == "y" ]; then
     cd ${virtenv}
     source ${virtenv}/bin/activate
     cd ${virtenv}/${project}
-    echo "yes" | python3 manage.py collectstatic
+    python3 manage.py collectstatic --noinput
     python3 manage.py migrate
     deactivate
 
@@ -111,7 +111,7 @@ else
     cd ${virtenv}
     source ${virtenv}/bin/activate
     cd ${virtenv}/${project}
-    python3 manage.py collectstatic
+    python3 manage.py collectstatic --noinput
     python3 manage.py migrate
     deactivate
 
