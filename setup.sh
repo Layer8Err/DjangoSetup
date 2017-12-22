@@ -534,8 +534,8 @@ sudo systemctl enable nginx
 echo "Creating ${mgmtdir} for Django helper scripts..."
 sudo mkdir -p ${mgmtdir}
 sudo chown -R ${USER}:${USER} ${mgmtdir}
-echo "Moving scripts in ${installerdir}/app-mgmt to ${mgmtdir} ..."
-mv -v ${installerdir}/app-mgmt/*.sh ${mgmtdir}/.
+echo "Moving scripts in ${installerdir}/django-mgmt to ${mgmtdir} ..."
+mv -v ${installerdir}/django-mgmt/*.sh ${mgmtdir}/.
 
 echo "Saving Django site settings to django_settings.sh ..."
 cd ${mgmtdir}
