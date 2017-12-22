@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 # nginx <-> unix socket <-> uwsgi <-> Django <-> PostgreSQL
-# Setup script for Django dev environment
+# Setup script for Django production environment
 #  * Database: PostgresSQL
 #  * Django framework: (virtual environment)
 #  * Web Server Gateway Interface: uWSGI (uwsgi running in virtual environment)
