@@ -1,5 +1,5 @@
 #!/bin/bash
-HEIGHT=15
+HEIGHT=14
 WIDTH=40
 CHOICE_HEIGHT=8
 BACKTITLE="Django Menu"
@@ -12,14 +12,15 @@ source django_settings.sh
 #project=djangsite
 
 function pause {
-	read -n1 -r -p "Press any key to continue..." key
+	read -nexit	
+	1 -r -p "Press any key to continue..." key
 }
 
 function vdjangEnv {
 	cd ${virtenv}
 	source bin/activate
 	cd ${virtenv}/${project}
-}
+ }
 
 OPTIONS=(1 "Check code"
 	2 "Start web server"
@@ -59,7 +60,7 @@ while [ 1 == $LOOP ] ; do
 		3)
 			echo "Deploying static files..."
 			vdjangEnv
-			python3 {virtenv}/${project}/manage.py collectstatic
+			python3 ${virtenv}/${project}/manage.py collectstatic
 			sleep 1
 			pause
 			;;
@@ -68,9 +69,9 @@ while [ 1 == $LOOP ] ; do
 			sleep 1
 			vdjangEnv
 			echo "Making migrations..."
-			python3 {virtenv}/${project}/manage.py makemigrations
+			python3 ${virtenv}/${project}/manage.py makemigrations
 			echo "Migrating to database..."
-			python3 {virtenv}/${project}/manage.py migrate
+			python3 ${virtenv}/${project}/manage.py migrate
 			sleep 1
 			pause
 			;;
@@ -78,7 +79,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Creating models.py from database..."
 			sleep 1
 			vdjangEnv
-			python3 {virtenv}/${project}/manage.py inspectdb
+			python3 ${virtenv}/${project}/manage.py inspectdb
 			sleep 1
 			pause
 			;;
@@ -86,7 +87,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Dropping to django shell..."
 			sleep 1
 			vdjangEnv
-			python3 {virtenv}/${project}/manage.py shell
+			python3 ${virtenv}/${project}/manage.py shell
 			sleep 1
 			pause
 			;;
@@ -94,7 +95,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Running Django TestCases..."
 			sleep 1
 			vdjangEnv
-			python3 {virtenv}/${project}/manage.py test
+			python3 ${virtenv}/${project}/manage.py test
 			pause
 			;;
 		8)

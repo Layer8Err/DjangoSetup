@@ -1,7 +1,7 @@
 #!/bin/bash
-HEIGHT=15
+HEIGHT=12
 WIDTH=40
-CHOICE_HEIGHT=8
+CHOICE_HEIGHT=4
 BACKTITLE="Django App Menu"
 TITLE="Django Application Options"
 MENU="Choose one of the following:"
@@ -39,7 +39,6 @@ while [ 1 == $LOOP ] ; do
 	case $CHOICE in
 		1)
 			echo "Creating Django app..."
-			vdjangEnv
 			source createapp.sh
 			pause
 			;;

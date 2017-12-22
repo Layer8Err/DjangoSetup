@@ -19,7 +19,9 @@ USER=${USER}
 MAIL="admin@mail.com"
 
 ################################################################################
-installerdir=$( pwd )
+#installerdir=$( pwd ) # Setup previously located in root git directory
+installerdir=$(eval "cd .. ; pwd")
+
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
