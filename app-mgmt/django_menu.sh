@@ -2,13 +2,14 @@
 HEIGHT=15
 WIDTH=40
 CHOICE_HEIGHT=8
-BACKTITLE="Ubuntu Development Server"
+BACKTITLE="Django Menu"
 TITLE="Django Testing Options"
 MENU="Choose one of the following:"
 LOOP=1
 
-virtenv=/opt/djangvenv
-project=djangsite
+source django_settings.sh
+#virtenv=/opt/djangvenv
+#project=djangsite
 
 function pause {
 	read -n1 -r -p "Press any key to continue..." key
@@ -52,7 +53,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Starting uwsgi \"web server\"..."
 			echo "Hit \"Ctrl + C\" to close server"
 			cd ${virtenv}/${project}
-			uwsgi --ini ${virtenv}/${project}/emperor.ini
+			python3 manage.py runserver
 			pause
 			;;
 		3)
@@ -93,7 +94,7 @@ while [ 1 == $LOOP ] ; do
 			echo "Running Django TestCases..."
 			sleep 1
 			vdjangEnv
-			python3 {virtenv}/${project}/manage.py test schedule
+			python3 {virtenv}/${project}/manage.py test
 			pause
 			;;
 		8)
