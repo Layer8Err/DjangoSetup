@@ -29,9 +29,8 @@ echo "Django Dev Setup on $thisos"
 echo "--------------------------------------------"
 echo -n "Virtual environment path:   "
 read -r uvirtenv
-if [ ! "$uvirtenv" ]; then
+if [ "$uvirtenv" ]; then
     virtenv="$uvirtenv"
-    printf "\n"
 else
     printf "         Default set to:    ${virtenv}\n"
 fi
