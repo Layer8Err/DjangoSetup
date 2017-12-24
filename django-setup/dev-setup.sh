@@ -23,14 +23,15 @@ installerdir=$(eval "cd .. ; pwd")
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
-clear
+#clear
 echo "============================================"
 echo "Django Dev Setup on $thisos"
 echo "--------------------------------------------"
 echo -n "Virtual environment path:   "
 read -r uvirtenv
-if [ -d "$uvirtenv" ]; then
+if [ ! "$uvirtenv" ]; then
     virtenv="$uvirtenv"
+    printf "\n"
 else
     printf "         Default set to:    ${virtenv}\n"
 fi
@@ -183,8 +184,8 @@ deactivate
 echo "Creating ${mgmtdir} for Django helper scripts..."
 sudo mkdir -p ${mgmtdir}
 sudo chown -R ${USER}:${USER} ${mgmtdir}
-echo "Moving scripts in ${installerdir}/django-mgmt to ${mgmtdir} ..."
-mv -v ${installerdir}/django-mgmt/*.sh ${mgmtdir}/.
+echo "Copying scripts in ${installerdir}/django-mgmt to ${mgmtdir} ..."
+cp -v ${installerdir}/django-mgmt/*.sh ${mgmtdir}/.
 
 echo "Saving Django site settings to django_settings.sh ..."
 cd ${mgmtdir}
