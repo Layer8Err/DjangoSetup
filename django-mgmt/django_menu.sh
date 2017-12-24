@@ -1,7 +1,7 @@
 #!/bin/bash
 HEIGHT=14
 WIDTH=40
-CHOICE_HEIGHT=8
+CHOICE_HEIGHT=9
 BACKTITLE="Django Menu"
 TITLE="Django Testing Options"
 MENU="Choose one of the following:"
@@ -29,7 +29,8 @@ OPTIONS=(1 "Check code"
 	5 "Create models.py from database"
 	6 "Start django shell"
 	7 "Run django TestCases"
-	8 "Exit Django Menu")
+	8 "Django App Menu"
+	9 "Exit Django Menu")
 	
 while [ 1 == $LOOP ] ; do
 	CHOICE=$(whiptail --clear \
@@ -99,6 +100,11 @@ while [ 1 == $LOOP ] ; do
 			pause
 			;;
 		8)
+			echo "Running django_app_menu.sh..."
+			sleep 1
+			source django_app_menu.sh
+			;;
+		9)
 			echo ""
 			LOOP=2
 			deactivate

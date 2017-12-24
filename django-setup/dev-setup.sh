@@ -27,17 +27,18 @@ clear
 echo "============================================"
 echo "Django Dev Setup on $thisos"
 echo "--------------------------------------------"
+echo -n "Virtual environment path:   "
+read -r uvirtenv
+if [ -d "$uvirtenv" ]; then
+    virtenv="$uvirtenv"
+else
+    printf "         Default set to:    ${virtenv}\n"
+fi
 echo -n "Site (project) name:        "
 read -r djangProj
 if [ ! "$djangProj" ]; then
     djangProj="project"
     printf "         Default set to:    ${djangProj}\n"
-fi
-echo -n "Database name:              "
-read -r djangdb
-if [ ! "$djangdb" ]; then
-    djangdb=${djangProj}
-    printf "         Default set to:    ${djangdb}\n"
 fi
 echo    "Set up Django superuser:    ${USER}"
 echo -n "Enter superuser Password:   "
@@ -50,7 +51,7 @@ echo "============================================"
 echo "-------------Verify Django info-------------"
 echo "Virtual environment:        ${virtenv}"
 echo "Project name:               ${djangProj}"
-echo "Database name:              ${djangdb}"
+echo "Database name:              db.sqlite3"
 echo "Superuser name:             ${USER}"
 echo "Superuser email:            ${MAIL}"
 echo "____________________________________________"
@@ -81,36 +82,21 @@ if [ $thisos != "centos" ]; then
     sudo apt-get update && sudo apt-get -y upgrade
 
     echo "Installing packages..."
-    sudo apt-get -fy install python3-pip python3-dev python virtualenv postgresql nginx-full postgresql-contrib libpq-dev gcc
+    sudo apt-get -fy install python3-pip python3-dev python virtualenv gcc
 fi
 # CentOS
 if [ $thisos = "centos" ]; then
     # Experimental stuff for CentOS7 (these packages are older than the ones installed for Ubuntu 16.04)
     ## https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-centos-7
     sudo yum -y -v upgrade
-    sudo yum -y -v install postgresql postgresql-server postgresql-contrib epel-release gcc
-    sudo yum -y -v install nginx python34 python34-pip python34-devel 
+    sudo yum -y -v install epel-release gcc
+    sudo yum -y -v install python34 python34-pip python34-devel 
     # Open ports for nginx
-    sudo firewall-cmd --permanent --zone=public --add-service=http
-    sudo firewall-cmd --permanent --zone=public --add-service=https
-    sudo firewall-cmd --reload
-    # sudo -H pip3 install --upgrade pip
-    # sudo pip3 install requests bs4 lxml js2py # Web scraping
-    # sudo pip3 install virtualenv virtualenvwrappers
-    # # add to shell init script
-    # # echo "export WORKON_HOME=~/Env" >> ~/.bashrc
-    # # echo "source /usr/bin/virtualenvwrapper.sh" >> ~/.bashrc
-    # sudo pip3 install setuptools wheel virtualenv django pytz psycopg2 uwsgi # django
-    ## Set python3.4 as the default
-    # echo "alias python='/usr/bin/python3.4'" >> ~/.bashrc
-    # source ~/.bashrc
-    sudo postgresql-setup initdb
-    echo "Modify pg_hba.conf to allow password login..."
-    sudo sed -i s/ident/md5/g /var/lib/pgsql/data/pg_hba.conf
-    echo "Enabling PostgreSQL service..."
-    sudo systemctl enable postgresql
-    echo "Starting PostgreSQL service..."
-    sudo systemctl start postgresql
+    #sudo firewall-cmd --permanent --zone=public --add-service=http
+    #sudo firewall-cmd --permanent --zone=public --add-service=https
+    #sudo firewall-cmd --reload
+    sudo -H pip3 install --upgrade pip
+    sudo pip3 install setuptools virtualenv virtualenvwrappers
 fi
 
 randpwd (){
