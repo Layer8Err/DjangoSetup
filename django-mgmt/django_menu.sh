@@ -1,5 +1,5 @@
 #!/bin/bash
-HEIGHT=14
+HEIGHT=16
 WIDTH=40
 CHOICE_HEIGHT=9
 BACKTITLE="Django Menu"
@@ -25,8 +25,8 @@ function vdjangEnv {
 OPTIONS=(1 "Check code"
 	2 "Start web server"
 	3 "Deploy static files"
-	4 "Migrate models.py to database"
-	5 "Create models.py from database"
+	4 "Create models.py from database"
+	5 "Migrate models.py to database"
 	6 "Start django shell"
 	7 "Run django TestCases"
 	8 "Django App Menu"
@@ -66,6 +66,14 @@ while [ 1 == $LOOP ] ; do
 			pause
 			;;
 		4)
+			echo "Creating models.py from database..."
+			sleep 1
+			vdjangEnv
+			python3 ${virtenv}/${project}/manage.py inspectdb
+			sleep 1
+			pause
+			;;
+		5)
 			echo "Migrating models.py to database..."
 			sleep 1
 			vdjangEnv
@@ -75,15 +83,7 @@ while [ 1 == $LOOP ] ; do
 			python3 ${virtenv}/${project}/manage.py migrate
 			sleep 1
 			pause
-			;;
-		5)
-			echo "Creating models.py from database..."
-			sleep 1
-			vdjangEnv
-			python3 ${virtenv}/${project}/manage.py inspectdb
-			sleep 1
-			pause
-			;;
+			;;	
 		6)
 			echo "Dropping to django shell..."
 			sleep 1
@@ -100,14 +100,11 @@ while [ 1 == $LOOP ] ; do
 			pause
 			;;
 		8)
-			echo "Running django_app_menu.sh..."
-			sleep 1
-			source django_app_menu.sh
+			./django_app_menu.sh
 			;;
 		9)
 			echo ""
 			LOOP=2
-			deactivate
 			;;
 	esac
 done

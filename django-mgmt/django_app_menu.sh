@@ -5,7 +5,7 @@ CHOICE_HEIGHT=4
 BACKTITLE="Django App Menu"
 TITLE="Django Application Options"
 MENU="Choose one of the following:"
-LOOP=1
+ALOOP=1
 
 source django_settings.sh
 
@@ -24,7 +24,7 @@ OPTIONS=(1 "Create Django app"
 	3 "Package Django app"
 	4 "Exit Django App Menu")
 	
-while [ 1 == $LOOP ] ; do
+while [ 1 == $ALOOP ] ; do
 	CHOICE=$(whiptail --clear \
 			--backtitle "$BACKTITLE" \
 			--title "$TITLE" \
@@ -39,23 +39,22 @@ while [ 1 == $LOOP ] ; do
 	case $CHOICE in
 		1)
 			echo "Creating Django app..."
-			source createapp.sh
+			./createapp.sh
 			pause
 			;;
 		2)
 			echo "Import Django app..."
-			source importapp.sh
+			./importapp.sh
 			pause
 			;;
 		3)
 			echo "Packaging Django app..."
-			source packageapp.sh
+			./packageapp.sh
 			pause
 			;;
 		4)
 			echo ""
-			LOOP=2
-			deactivate
+			ALOOP=2
 			;;
 	esac
 done
