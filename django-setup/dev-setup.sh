@@ -10,8 +10,6 @@
 ## Config variables
 # $virtenv will be the virtual environment directory
 virtenv=/home/${USER}/dev/django
-# $mgmtdir will be where we put all the helper scripts 
-mgmtdir=${virtenv}/django-mgmt
 
 # Django superuser info
 USER=${USER}
@@ -113,6 +111,9 @@ sudo -H pip3 install --upgrade pip
 echo "Creating Python VirtualEnv..."
 echo "Setting up directory structure..."
 sudo mkdir -p ${virtenv}
+# $mgmtdir will be where we put all the helper scripts 
+mgmtdir=${virtenv}/django-mgmt
+sudo mkdir -p ${mgmtdir}
 sudo chown -R ${USER}:${USER} ${virtenv}
 
 cd ${virtenv}
