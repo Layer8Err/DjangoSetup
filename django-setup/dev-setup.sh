@@ -21,6 +21,9 @@ installerdir=$(eval "cd .. ; pwd")
 ## Check OS
 thisos=$( cat /etc/*release | grep ID | head -n 1 | cut -d'=' -f2 - | sed s/\"//g )
 thisos=$( echo $thisos | tr [:upper:] [:lower:])
+if [ ! "$thisos" ]; then
+    thisos=unknown
+fi
 #clear
 echo "============================================"
 echo "Django Dev Setup on $thisos"
@@ -54,7 +57,11 @@ echo "Superuser name:             ${USER}"
 echo "Superuser email:            ${MAIL}"
 echo "____________________________________________"
 echo "---Enter password to continue with setup----"
-sudo -v
+{
+    sudo -v
+} || {
+    echo "Bad password or sudo is not supported on this system"
+}
 echo "============================================"
 echo "Updating packages..."
 # Ubuntu / Debian
@@ -93,8 +100,6 @@ if [ $thisos = "centos" ]; then
     #sudo firewall-cmd --permanent --zone=public --add-service=http
     #sudo firewall-cmd --permanent --zone=public --add-service=https
     #sudo firewall-cmd --reload
-    sudo -H pip3 install --upgrade pip
-    sudo pip3 install setuptools virtualenv virtualenvwrappers
 fi
 
 randpwd (){
@@ -105,16 +110,32 @@ randpwd (){
 PGPASSWORD=$( randpwd )
 
 echo "Upgrading pip..."
-sudo -H pip3 install --upgrade pip
+{
+    sudo -H pip3 install --upgrade pip
+} || {
+    pip3 install --upgrade pip
+}
+echo "Installing python3 packages..."
+pip3 install setuptools virtualenv
+pip3 install virtualenvwrappers
 
 ################################################################################
 echo "Creating Python VirtualEnv..."
 echo "Setting up directory structure..."
-sudo mkdir -p ${virtenv}
+{
+    sudo mkdir -p ${virtenv}
+} || {
+    mkdir -p ${virtenv}
+}
 # $mgmtdir will be where we put all the helper scripts 
 mgmtdir=${virtenv}/django-mgmt
-sudo mkdir -p ${mgmtdir}
-sudo chown -R ${USER}:${USER} ${virtenv}
+{
+    sudo mkdir -p ${mgmtdir}
+    sudo chown -R ${USER}:${USER} ${virtenv}
+} || {
+    mkdir -p ${mgmtdir}
+    chown -R ${USER}:${USER} ${virtenv}
+}
 
 cd ${virtenv}
 if [ $thisos = "centos" ]; then
@@ -182,8 +203,14 @@ deactivate
 ################################################################################
 
 echo "Creating ${mgmtdir} for Django helper scripts..."
-sudo mkdir -p ${mgmtdir}
-sudo chown -R ${USER}:${USER} ${mgmtdir}
+{
+    sudo mkdir -p ${mgmtdir}
+    sudo chown -R ${USER}:${USER} ${mgmtdir}
+} || {
+    mkdir -p ${mgmtdir}
+    chown -R ${USER}:${USER} ${mgmtdir}
+}
+
 echo "Copying scripts in ${installerdir}/django-mgmt to ${mgmtdir} ..."
 cp -v ${installerdir}/django-mgmt/*.sh ${mgmtdir}/.
 
