@@ -1,10 +1,10 @@
 #!/bin/bash
-HEIGHT=12
-WIDTH=40
-CHOICE_HEIGHT=4
-BACKTITLE="Django App Menu"
-TITLE="Django Application Options"
-MENU="Choose one of the following:"
+AHEIGHT=12
+AWIDTH=40
+ACHOICE_HEIGHT=4
+ABACKTITLE="Django App Menu"
+ATITLE="Django Application Options"
+AMENU="Choose one of the following:"
 ALOOP=1
 
 source django_settings.sh
@@ -19,37 +19,37 @@ function vdjangEnv {
 	cd ${virtenv}/${project}
 }
 
-OPTIONS=(1 "Create Django app"
+AOPTIONS=(1 "Create Django app"
 	2 "Import Django app"
 	3 "Package Django app"
 	4 "Exit Django App Menu")
 	
 while [ 1 == $ALOOP ] ; do
-	CHOICE=$(whiptail --clear \
-			--backtitle "$BACKTITLE" \
-			--title "$TITLE" \
-			--menu "$MENU" \
+	ACHOICE=$(whiptail --clear \
+			--backtitle "$ABACKTITLE" \
+			--title "$ATITLE" \
+			--menu "$AMENU" \
 			--ok-button "Launch" \
 			--nocancel \
-			$HEIGHT $WIDTH $CHOICE_HEIGHT \
-			"${OPTIONS[@]}" \
+			$AHEIGHT $AWIDTH $ACHOICE_HEIGHT \
+			"${AOPTIONS[@]}" \
 			2>&1 >/dev/tty)
 
 	clear
-	case $CHOICE in
+	case $ACHOICE in
 		1)
 			echo "Creating Django app..."
-			./createapp.sh
+			source createapp.sh
 			pause
 			;;
 		2)
 			echo "Import Django app..."
-			./importapp.sh
+			source importapp.sh
 			pause
 			;;
 		3)
 			echo "Packaging Django app..."
-			./packageapp.sh
+			source packageapp.sh
 			pause
 			;;
 		4)
