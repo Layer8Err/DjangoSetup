@@ -12,8 +12,7 @@ source django_settings.sh
 #project=djangsite
 
 function pause {
-	read -nexit	
-	1 -r -p "Press any key to continue..." key
+	read -n1 -r -p "Press any key to continue..." key
 }
 
 function vdjangEnv {
@@ -100,7 +99,7 @@ while [ 1 == $LOOP ] ; do
 			pause
 			;;
 		8)
-			./django_app_menu.sh
+			source django_app_menu.sh
 			;;
 		9)
 			echo ""
