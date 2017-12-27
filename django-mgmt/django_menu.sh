@@ -7,6 +7,8 @@ TITLE="Django Testing Options"
 MENU="Choose one of the following:"
 LOOP=1
 
+scriptdir=$(pwd)
+
 source django_settings.sh
 #virtenv=/opt/djangvenv
 #project=djangsite
@@ -99,6 +101,7 @@ while [ 1 == $LOOP ] ; do
 			pause
 			;;
 		8)
+			cd ${scriptdir}
 			source django_app_menu.sh
 			;;
 		9)
