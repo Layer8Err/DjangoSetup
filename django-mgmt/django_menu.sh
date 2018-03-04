@@ -1,7 +1,7 @@
 #!/bin/bash
 HEIGHT=16
 WIDTH=40
-CHOICE_HEIGHT=9
+CHOICE_HEIGHT=10
 BACKTITLE="Django Menu"
 TITLE="Django Testing Options"
 MENU="Choose one of the following:"
@@ -108,6 +108,7 @@ while [ 1 == $LOOP ] ; do
 		9)
 			echo "Creating django superuser..."
 			sleep 1
+			cd ${scriptdir}
 			source create_superuser.sh
 			;;
 		10)
