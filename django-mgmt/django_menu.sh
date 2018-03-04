@@ -31,7 +31,8 @@ OPTIONS=(1 "Check code"
 	6 "Start django shell"
 	7 "Run django TestCases"
 	8 "Django App Menu"
-	9 "Exit Django Menu")
+	9 "Create django superuser"
+	10 "Exit Django Menu")
 	
 while [ 1 == $LOOP ] ; do
 	CHOICE=$(whiptail --clear \
@@ -105,6 +106,11 @@ while [ 1 == $LOOP ] ; do
 			source django_app_menu.sh
 			;;
 		9)
+			echo "Creating django superuser..."
+			sleep 1
+			source create_superuser.sh
+			;;
+		10)
 			echo ""
 			LOOP=2
 			;;
