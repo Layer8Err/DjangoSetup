@@ -542,16 +542,16 @@ cp -v ${installerdir}/django-mgmt/*.sh ${mgmtdir}/.
 echo "Saving Django site settings to django_settings.sh ..."
 cd ${mgmtdir}
 settingsfile=${mgmtdir}/django_settings.sh
-touch ${settingsfile}
-read -d '' djangsettings <<"EOF"
-#!/bin/bash
-# This settings file defines how Django was set up
-# You can reference this script by using:
-#  source django_settings.sh
+# touch ${settingsfile}
+# read -d '' djangsettings <<"EOF"
+# #!/bin/bash
+# # This settings file defines how Django was set up
+# # You can reference this script by using:
+# #  source django_settings.sh
 
-EOF
-echo "$djangsettings" >> ${settingsfile}
-echo "virtenv=${virtenv}" >> ${settingsfile}
+# EOF
+# echo "$djangsettings" >> ${settingsfile}
+# echo "virtenv=${virtenv}" >> ${settingsfile}
 echo "project=${djangProj}" >> ${settingsfile}
 
 echo "Setting management scripts to executible..."
